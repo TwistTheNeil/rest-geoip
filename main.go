@@ -8,7 +8,8 @@ import (
 
 func main() {
 	r := gin.Default()
-	r.GET("/", routes.GetIpAddressInfo)
+	r.GET("/geoip", routes.GeoIPInfo)
+	r.GET("/ip", routes.IPAddress)
 
 	r.Run()
 }
