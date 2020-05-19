@@ -6,6 +6,8 @@ import (
 	"github.com/oschwald/maxminddb-golang"
 )
 
+// MaxmindRecord captures the data resulting from a query to the
+// maxmind database
 type MaxmindRecord struct {
 	Country struct {
 		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union"`
@@ -28,9 +30,11 @@ type MaxmindRecord struct {
 		IsAnonymousProxy    bool `maxminddb:"is_anonymous_proxy"`
 		IsSatelliteProvider bool `maxminddb:"is_satellite_provider"`
 	} `maxminddb:"traits"`
+	IP string
 }
 
-func GetIpAddressInfo(ipAddress string) (MaxmindRecord, error) {
+// Info returns results from a maxmind db lookup
+func Info(ipAddress string) (MaxmindRecord, error) {
 	var record MaxmindRecord
 
 	db, err := maxminddb.Open("db.mmdb")
@@ -46,5 +50,6 @@ func GetIpAddressInfo(ipAddress string) (MaxmindRecord, error) {
 		return record, err
 	}
 
+	record.IP = ipAddress
 	return record, nil
 }
