@@ -1,0 +1,103 @@
+{{template "base" .}}
+
+{{define "ipaddress"}}{{.IP}}{{end}}
+
+{{define "main"}}
+<div class="container-fluid w-25 p-3 h-100 justify-content-center align-items-center">
+  <div class="card">
+      <div class="card-header">
+        {{.IP}}
+      </div>
+      <div class="card-body">
+        <table style="border-collapse: collapse; border: none;">
+          <tr style="border: none;">
+            <td style="border: none;">
+              Country
+            </td>
+            <td style="border: none;">
+              {{.Country.ISOCode}}
+            </td>
+          </tr>
+
+          <tr style="border: none;">
+            <td style="border: none;">
+              EU
+            </td>
+            <td style="border: none;">
+              {{if .Country.IsInEuropeanUnion}}
+                Yes
+              {{else}}
+                No
+              {{end}}
+            </td>
+          </tr>
+
+          <tr style="border: none;">
+            <td style="border: none;">
+              City
+            </td>
+            <td style="border: none;">
+              {{range $key, $value := .City.Names}}
+                {{$key}}:{{$value}}</br>
+              {{end}}
+            </td>
+          </tr>
+
+          <tr style="border: none;">
+            <td style="border: none;">
+              Latitude
+            </td>
+            <td style="border: none;">
+              {{.Location.Latitude}}
+            </td>
+          </tr>
+
+          <tr style="border: none;">
+            <td style="border: none;">
+              Longitude
+            </td>
+            <td style="border: none;">
+              {{.Location.Longitude}}
+            </td>
+          </tr>
+
+          <tr style="border: none;">
+            <td style="border: none;">
+              Time Zone
+            </td>
+            <td style="border: none;">
+              {{.Location.TimeZone}}
+            </td>
+          </tr>
+
+          <tr style="border: none;">
+            <td style="border: none;">
+              Approx. Zip Code
+            </td>
+            <td style="border: none;">
+              {{.Postal.Code}}
+            </td>
+          </tr>
+
+          <tr style="border: none;">
+            <td style="border: none;">
+              Anonymous Proxy
+            </td>
+            <td style="border: none;">
+              {{.Traits.IsAnonymousProxy}}
+            </td>
+          </tr>
+
+          <tr style="border: none;">
+            <td style="border: none;">
+              Satellite Provider
+            </td>
+            <td style="border: none;">
+              {{.Traits.IsSatelliteProvider}}
+            </td>
+          </tr>
+        </table>  
+      </div>
+    </div>
+</div>
+{{end}}
