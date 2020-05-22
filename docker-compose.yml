@@ -2,6 +2,11 @@ version: '3.4'
 
 services:
   rest-geoip:
-    build: .
+    build:
+      context: .
+      args:
+        - MAXMIND_LICENSE=${MAXMIND_LICENSE}
     ports:
       - 8080:8080
+    environment:
+      - MAXMIND_DB_LOCATION=/opt/GeoLite2-City.mmdb

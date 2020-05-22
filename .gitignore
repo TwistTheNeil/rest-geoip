@@ -1,3 +1,4 @@
 rest-geoip
 GeoLite2*
 db.mmdb
+.env

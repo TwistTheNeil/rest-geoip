@@ -2,6 +2,7 @@ package geoip
 
 import (
 	"net"
+	"os"
 
 	"github.com/oschwald/maxminddb-golang"
 )
@@ -37,7 +38,7 @@ type MaxmindRecord struct {
 func Info(ipAddress string) (MaxmindRecord, error) {
 	var record MaxmindRecord
 
-	db, err := maxminddb.Open("db.mmdb")
+	db, err := maxminddb.Open(os.Getenv("MAXMIND_DB_LOCATION"))
 	if err != nil {
 		return record, err
 	}
