@@ -36,5 +36,5 @@ func DisplayGeoIPInfo(c *gin.Context) {
 		})
 	}
 
-	c.HTML(200, "ipAddressInfo.tmpl", record)
+	c.HTML(200, "/templates/ipAddressInfo.tmpl", record)
 }

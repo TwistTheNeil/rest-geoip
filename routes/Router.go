@@ -1,11 +1,19 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"rest-geoip/templates"
+
+	"github.com/gin-gonic/gin"
+)
 
 // SetupAndServe the gin router
 func SetupAndServe() {
 	router := gin.Default()
-	router.LoadHTMLGlob("templates/*")
+	t, err := templates.LoadTemplate()
+	if err != nil {
+		panic(err)
+	}
+	router.SetHTMLTemplate(t)
 
 	// API routes
 	api := router.Group("/api")
