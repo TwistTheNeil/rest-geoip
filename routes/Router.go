@@ -4,9 +4,13 @@ import "github.com/gin-gonic/gin"
 
 // SetupAndServe the gin router
 func SetupAndServe() {
-	r := gin.Default()
-	r.GET("/geoip", GeoIPInfo)
-	r.GET("/ip", IPAddress)
+	router := gin.Default()
 
-	r.Run()
+	api := router.Group("/api")
+	{
+		api.GET("/geoip", GeoIPInfo)
+		api.GET("/ip", IPAddress)
+	}
+
+	router.Run()
 }
