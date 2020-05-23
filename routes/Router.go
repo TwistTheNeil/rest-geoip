@@ -25,5 +25,5 @@ func SetupAndServe() {
 	// Web routes
 	router.GET("/", DisplayGeoIPInfo)
 
-	router.Run()
+	router.Run() // #nosec
 }
