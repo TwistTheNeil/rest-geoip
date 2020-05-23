@@ -1,4 +1,4 @@
-package geoip
+package maxmind
 
 import (
 	"net"
@@ -7,9 +7,8 @@ import (
 	"github.com/oschwald/maxminddb-golang"
 )
 
-// MaxmindRecord captures the data resulting from a query to the
-// maxmind database
-type MaxmindRecord struct {
+// Record captures the data resulting from a query to the maxmind database
+type Record struct {
 	Country struct {
 		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union"`
 		ISOCode           string `maxminddb:"iso_code"`
@@ -35,8 +34,8 @@ type MaxmindRecord struct {
 }
 
 // Info returns results from a maxmind db lookup
-func Info(ipAddress string) (MaxmindRecord, error) {
-	var record MaxmindRecord
+func Info(ipAddress string) (Record, error) {
+	var record Record
 
 	db, err := maxminddb.Open(os.Getenv("MAXMIND_DB_LOCATION"))
 	if err != nil {

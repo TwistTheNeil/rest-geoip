@@ -1,14 +1,14 @@
 package routes
 
 import (
-	"rest-geoip/geoip"
+	"rest-geoip/maxmind"
 
 	"github.com/gin-gonic/gin"
 )
 
 // GeoIPInfo replies with the client's geo ip info
 func GeoIPInfo(c *gin.Context) {
-	record, err := geoip.Info(c.ClientIP())
+	record, err := maxmind.Info(c.ClientIP())
 	if err != nil {
 		c.JSON(500, gin.H{
 			"error": err.Error(),
@@ -27,7 +27,7 @@ func IPAddress(c *gin.Context) {
 
 // DisplayGeoIPInfo displays geoip info via HTML
 func DisplayGeoIPInfo(c *gin.Context) {
-	record, err := geoip.Info(c.ClientIP())
+	record, err := maxmind.Info(c.ClientIP())
 
 	// TODO: Show a custom 404 error on frontend
 	if err != nil {
