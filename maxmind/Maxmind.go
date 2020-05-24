@@ -3,6 +3,9 @@ package maxmind
 import (
 	"net"
 	"os"
+	"path/filepath"
+	"rest-geoip/utils"
+	"sync"
 
 	"github.com/oschwald/maxminddb-golang"
 )
@@ -37,7 +40,7 @@ type Record struct {
 func Info(ipAddress string) (Record, error) {
 	var record Record
 
-	db, err := maxminddb.Open(os.Getenv("MAXMIND_DB_LOCATION"))
+	db, err := maxminddb.Open(os.Getenv("MAXMIND_DB_LOCATION") + os.Getenv("MAXMIND_DB"))
 	if err != nil {
 		return record, err
 	}
@@ -52,4 +55,77 @@ func Info(ipAddress string) (Record, error) {
 
 	record.IP = ipAddress
 	return record, nil
+}
+
+// DownloadAndUpdate the maxmind database
+func DownloadAndUpdate() error {
+	dbURL := "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=" + os.Getenv("MAXMIND_LICENSE") + "&suffix=tar.gz"
+	md5URL := "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=" + os.Getenv("MAXMIND_LICENSE") + "&suffix=tar.gz.md5"
+	const dbDest = "/tmp/Geolite.tar.gz"
+	const md5Dest = "/tmp/Geolite.tar.gz.md5"
+	const tempDir = "/tmp/"
+
+	// Make channels to pass errors in WaitGroup
+	downloadErrors := make(chan error)
+	wgDone := make(chan bool)
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	go utils.Download(dbURL, dbDest, &wg, downloadErrors)
+	go utils.Download(md5URL, md5Dest, &wg, downloadErrors)
+
+	// wait until WaitGroup is done
+	// Sends a signal we need to catch in the select
+	go func() {
+		wg.Wait()
+		close(wgDone)
+	}()
+
+	// Wait until either WaitGroup is done or an error is received
+	select {
+	case <-wgDone:
+		break
+	case err := <-downloadErrors:
+		close(downloadErrors)
+		return err
+	}
+
+	if err := utils.VerifyMD5HashFromFile(dbDest, md5Dest); err != nil {
+		return err
+	}
+
+	// Prepare a reader for extracting the tar.gz
+	r, err := os.Open(dbDest)
+	if err != nil {
+		return err
+	}
+
+	if err := utils.ExtractTarGz(r, tempDir); err != nil {
+		return err
+	}
+
+	// Move mmdb to MAXMIND_DB_LOCATION
+	geoCityDBPath, _, err := utils.FindFile(tempDir, "mmdb$")
+	if err != nil {
+		return err
+	}
+
+	if err = os.Rename(geoCityDBPath, os.Getenv("MAXMIND_DB_LOCATION")+"/"+os.Getenv("MAXMIND_DB")); err != nil {
+		return err
+	}
+
+	// Remove all temporary downloaded files
+	matches, err := filepath.Glob(tempDir + "Geo*")
+	if err != nil {
+		return err
+	}
+
+	for _, v := range matches {
+		if err := os.RemoveAll(v); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

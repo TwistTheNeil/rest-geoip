@@ -20,6 +20,7 @@ func SetupAndServe() {
 	{
 		api.GET("/geoip", GeoIPInfo)
 		api.GET("/ip", IPAddress)
+		api.POST("/update", UpdateMaxmindDB)
 	}
 
 	// Web routes
