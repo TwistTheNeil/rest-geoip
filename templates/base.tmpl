@@ -13,8 +13,8 @@
   </head>
   <body>
     <nav class="navbar navbar-light bg-light">
-      <form class="form-inline">
-        <input class="form-control mr-sm-2" type="search" placeholder="IP Address" aria-label="ip-address">
+      <form class="form-inline" action="/web" method="POST" novalidate>
+        <input class="form-control mr-sm-2" type="search" placeholder="IP Address" aria-label="ip-address" name="search-input">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Get Info</button>
       </form>
     </nav>

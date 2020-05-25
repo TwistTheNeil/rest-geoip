@@ -20,11 +20,23 @@ func SetupAndServe() {
 	{
 		api.GET("/geoip", GeoIPInfo)
 		api.GET("/ip", IPAddress)
+		api.GET("/ip/:address", GeoIPInfo)
 		api.POST("/update", UpdateMaxmindDB)
 	}
 
 	// Web routes
-	router.GET("/", DisplayGeoIPInfo)
+	web := router.Group("/web")
+	{
+		web.GET("/", DisplayGeoIPInfo)
+		web.GET("/:address", DisplayGeoIPInfo)
+		web.POST("/", SearchIPAddressInfo)
+	}
+
+	// Redirects
+	router.GET("/", func(c *gin.Context) {
+		c.Request.URL.Path = "/web"
+		router.HandleContext(c)
+	})
 
 	router.Run() // #nosec
 }
