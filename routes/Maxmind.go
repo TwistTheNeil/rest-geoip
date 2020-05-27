@@ -43,7 +43,7 @@ func DisplayGeoIPInfo(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "/templates/ipAddressInfo.tmpl", record)
+	c.HTML(http.StatusOK, "ipAddressInfo", record)
 }
 
 // UpdateMaxmindDB updates the db

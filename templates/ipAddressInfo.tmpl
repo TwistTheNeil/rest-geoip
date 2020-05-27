@@ -1,8 +1,5 @@
-{{template "base" .}}
-
-{{define "ipaddress"}}{{.IP}}{{end}}
-
-{{define "main"}}
+{{define "ipAddressInfo"}}
+{{template "head" .}}
 <div class="container-fluid w-25 p-3 h-100 justify-content-center align-items-center">
   <div class="card">
       <div class="card-header">
@@ -100,4 +97,5 @@
       </div>
     </div>
 </div>
+{{template "foot" .}}
 {{end}}
