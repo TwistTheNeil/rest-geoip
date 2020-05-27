@@ -1,15 +1,16 @@
 package routes
 
 import (
-	"rest-geoip/templates"
+	"rest-geoip/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/markbates/pkger"
 )
 
 // SetupAndServe the gin router
 func SetupAndServe() {
 	router := gin.Default()
-	t, err := templates.LoadTemplate()
+	t, err := utils.ParseTemplates("/templates")
 	if err != nil {
 		panic(err)
 	}
@@ -37,6 +38,9 @@ func SetupAndServe() {
 		c.Request.URL.Path = "/web"
 		router.HandleContext(c)
 	})
+
+	// Serve static files via pkger's fs
+	router.StaticFS("/static", pkger.Dir("/static"))
 
 	router.Run() // #nosec
 }
