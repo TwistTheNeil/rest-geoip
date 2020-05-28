@@ -1,15 +1,28 @@
 package routes
 
 import (
+	"os"
 	"rest-geoip/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/markbates/pkger"
 )
 
+func newRouter() *gin.Engine {
+	logging := os.Getenv("LOGGING")
+
+	if logging == "" || logging == "true" {
+		return gin.Default()
+	}
+
+	r := gin.New()
+	r.Use(gin.Recovery())
+	return r
+}
+
 // SetupRouter returns a configured router
 func SetupRouter() *gin.Engine {
-	router := gin.Default()
+	router := newRouter()
 	t, err := utils.ParseTemplates("/templates")
 	if err != nil {
 		panic(err)
