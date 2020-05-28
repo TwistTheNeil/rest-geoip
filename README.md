@@ -1,6 +1,6 @@
 # rest-geoip
 
-A self hosted application which replies with information about a client using the [Maxmind](https://www.maxmind.com) GeoLite2-City database.
+A self hosted geoip lookup application which provides a client with information about their IP address or any other. It uses the [Maxmind](https://www.maxmind.com) GeoLite2-City database.
 
 The webapp provides general geoip information. There is also an api available
 
