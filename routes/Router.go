@@ -20,6 +20,39 @@ func newRouter() *gin.Engine {
 	return r
 }
 
+func setupAPIRoutes(r *gin.Engine) {
+	api := r.Group("/api")
+	{
+		api.GET("/geoip", GeoIPInfo)
+		api.GET("/ip", IPAddress)
+		api.GET("/ip/:address", GeoIPInfo)
+		api.POST("/update", UpdateMaxmindDB)
+	}
+}
+
+func setupWebRoutes(r *gin.Engine) {
+	webEnv := os.Getenv("WEB")
+	if !(webEnv == "true" || webEnv == "") {
+		return
+	}
+
+	web := r.Group("/web")
+	{
+		web.GET("/", DisplayGeoIPInfo)
+		web.GET("/:address", DisplayGeoIPInfo)
+		web.POST("/", SearchIPAddressInfo)
+	}
+
+	// Redirects
+	r.GET("/", func(c *gin.Context) {
+		c.Request.URL.Path = "/web"
+		r.HandleContext(c)
+	})
+
+	// Serve static files via pkger's fs
+	r.StaticFS("/static", pkger.Dir("/static"))
+}
+
 // SetupRouter returns a configured router
 func SetupRouter() *gin.Engine {
 	router := newRouter()
@@ -29,31 +62,8 @@ func SetupRouter() *gin.Engine {
 	}
 	router.SetHTMLTemplate(t)
 
-	// API routes
-	api := router.Group("/api")
-	{
-		api.GET("/geoip", GeoIPInfo)
-		api.GET("/ip", IPAddress)
-		api.GET("/ip/:address", GeoIPInfo)
-		api.POST("/update", UpdateMaxmindDB)
-	}
-
-	// Web routes
-	web := router.Group("/web")
-	{
-		web.GET("/", DisplayGeoIPInfo)
-		web.GET("/:address", DisplayGeoIPInfo)
-		web.POST("/", SearchIPAddressInfo)
-	}
-
-	// Redirects
-	router.GET("/", func(c *gin.Context) {
-		c.Request.URL.Path = "/web"
-		router.HandleContext(c)
-	})
-
-	// Serve static files via pkger's fs
-	router.StaticFS("/static", pkger.Dir("/static"))
+	setupAPIRoutes(router)
+	setupWebRoutes(router)
 
 	return router
 }

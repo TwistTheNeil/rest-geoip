@@ -11,3 +11,4 @@ services:
       - MAXMIND_DB_LOCATION=/opt/
       - MAXMIND_DB=GeoLite2-City.mmdb
       - LOGGING=${LOGGING}
+      - WEB=${WEB}
