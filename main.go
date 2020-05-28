@@ -9,5 +9,9 @@ import (
 func main() {
 	// Explicitly include /templates
 	pkger.Include("/templates")
-	routes.SetupAndServe()
+
+	router := routes.SetupRouter()
+	if err := router.Run(); err != nil {
+		panic(err)
+	}
 }

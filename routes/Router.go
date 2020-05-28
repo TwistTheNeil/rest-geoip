@@ -7,8 +7,8 @@ import (
 	"github.com/markbates/pkger"
 )
 
-// SetupAndServe the gin router
-func SetupAndServe() {
+// SetupRouter returns a configured router
+func SetupRouter() *gin.Engine {
 	router := gin.Default()
 	t, err := utils.ParseTemplates("/templates")
 	if err != nil {
@@ -42,5 +42,5 @@ func SetupAndServe() {
 	// Serve static files via pkger's fs
 	router.StaticFS("/static", pkger.Dir("/static"))
 
-	router.Run() // #nosec
+	return router
 }
