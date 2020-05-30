@@ -4,6 +4,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"rest-geoip/customerrors"
 	"rest-geoip/utils"
 	"sync"
 
@@ -42,7 +43,7 @@ func Info(ipAddress string) (Record, error) {
 
 	db, err := maxminddb.Open(os.Getenv("MAXMIND_DB_LOCATION") + os.Getenv("MAXMIND_DB"))
 	if err != nil {
-		return record, err
+		return record, customerrors.ErrMMDBNotFound
 	}
 	defer db.Close()
 

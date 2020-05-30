@@ -35,9 +35,8 @@ func GeoIPInfo(c *gin.Context) {
 func DisplayGeoIPInfo(c *gin.Context) {
 	record, err := maxmind.Info(getRelevantIPAddress(c))
 
-	// TODO: Show a custom 404 error on frontend
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.HTML(http.StatusInternalServerError, "error", gin.H{
 			"error": err.Error(),
 		})
 		return
