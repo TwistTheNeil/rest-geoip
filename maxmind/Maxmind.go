@@ -38,7 +38,7 @@ type Record struct {
 }
 
 // Info returns results from a maxmind db lookup
-func Info(ipAddress string) (Record, error) {
+func Info(ip net.IP) (Record, error) {
 	var record Record
 
 	db, err := maxminddb.Open(os.Getenv("MAXMIND_DB_LOCATION") + os.Getenv("MAXMIND_DB"))
@@ -47,14 +47,12 @@ func Info(ipAddress string) (Record, error) {
 	}
 	defer db.Close()
 
-	ip := net.ParseIP(ipAddress)
-
 	err = db.Lookup(ip, &record)
 	if err != nil {
 		return record, err
 	}
 
-	record.IP = ipAddress
+	record.IP = ip.String()
 	return record, nil
 }
 

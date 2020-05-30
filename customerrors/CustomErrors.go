@@ -13,3 +13,6 @@ var ErrHashChecksum = errors.New("Hash checksum doesn't match")
 
 // ErrMMDBNotFound complains that the db is not found or unreadable
 var ErrMMDBNotFound = errors.New("Unable to read Maxmind DB")
+
+// ErrInvalidIPAddress complains about an invalid ip address
+var ErrInvalidIPAddress = errors.New("IP Address passed is invalid")

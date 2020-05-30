@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"net"
+	"rest-geoip/customerrors"
 	"rest-geoip/maxmind"
 
 	"net/http"
@@ -8,19 +10,32 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getRelevantIPAddress(c *gin.Context) string {
+func relevantIPAddress(c *gin.Context) (net.IP, error) {
 	ipQuery := c.ClientIP()
 	if c.Param("address") != "" {
 		ipQuery = c.Param("address")
 	}
 
-	return ipQuery
+	ip := net.ParseIP(ipQuery)
+
+	if ip == nil {
+		return nil, customerrors.ErrInvalidIPAddress
+	}
+
+	return ip, nil
 }
 
 // GeoIPInfo replies with the client's geo ip info
 func GeoIPInfo(c *gin.Context) {
-	record, err := maxmind.Info(getRelevantIPAddress(c))
-	// TODO: use service unavaialble if db is not present
+	ip, err := relevantIPAddress(c)
+	if err != nil {
+		c.HTML(http.StatusBadRequest, "error", gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	record, err := maxmind.Info(ip)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -33,7 +48,15 @@ func GeoIPInfo(c *gin.Context) {
 
 // DisplayGeoIPInfo displays geoip info via HTML
 func DisplayGeoIPInfo(c *gin.Context) {
-	record, err := maxmind.Info(getRelevantIPAddress(c))
+	ip, err := relevantIPAddress(c)
+	if err != nil {
+		c.HTML(http.StatusBadRequest, "error", gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	record, err := maxmind.Info(ip)
 
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "error", gin.H{
