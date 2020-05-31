@@ -86,7 +86,7 @@ func DownloadAndUpdate() error {
 	case <-wgDone:
 		break
 	case err := <-downloadErrors:
-		close(downloadErrors)
+		// close(downloadErrors)
 		return err
 	}
 

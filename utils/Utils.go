@@ -33,6 +33,10 @@ func Download(url, dest string, wg *sync.WaitGroup, errChannel chan<- error) {
 		errChannel <- customerrors.ErrDownloadFile
 		return
 	}
+	if resp.StatusCode%200 > 99 {
+		errChannel <- fmt.Errorf("Download error: %s", resp.Status)
+		return
+	}
 	defer resp.Body.Close()
 
 	// Create the file
