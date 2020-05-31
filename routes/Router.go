@@ -51,19 +51,19 @@ func setupWebRoutes(r *gin.Engine) {
 
 	// Serve static files via pkger's fs
 	r.StaticFS("/static", pkger.Dir("/static"))
+
+	// Load HTML templates
+	t, err := utils.ParseTemplates("/templates")
+	if err != nil {
+		panic(err)
+	}
+	r.SetHTMLTemplate(t)
 }
 
 // SetupRouter returns a configured router
 func SetupRouter() *gin.Engine {
 	router := newRouter()
-	t, err := utils.ParseTemplates("/templates")
-	if err != nil {
-		panic(err)
-	}
-	router.SetHTMLTemplate(t)
-
 	setupAPIRoutes(router)
 	setupWebRoutes(router)
-
 	return router
 }
