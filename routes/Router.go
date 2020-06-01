@@ -52,6 +52,8 @@ func setupWebRoutes(r *gin.Engine) {
 	// Serve static files via pkger's fs
 	r.StaticFS("/static", pkger.Dir("/static"))
 
+	// Explicitly include /templates
+	pkger.Include("/templates")
 	// Load HTML templates
 	t, err := utils.ParseTemplates("/templates")
 	if err != nil {
