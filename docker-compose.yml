@@ -12,3 +12,5 @@ services:
       - MAXMIND_DB=GeoLite2-City.mmdb
       - LOGGING=${LOGGING}
       - WEB=${WEB}
+      - LISTEN_ADDRESS=${LISTEN_ADDRESS}
+      - LISTEN_PORT=${LISTEN_PORT}
