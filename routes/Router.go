@@ -36,6 +36,15 @@ func setupWebRoutes(r *gin.Engine) {
 		return
 	}
 
+	// Explicitly include /templates
+	pkger.Include("/templates")
+	// Load HTML templates
+	t, err := utils.ParseTemplates("/templates")
+	if err != nil {
+		panic(err)
+	}
+	r.SetHTMLTemplate(t)
+
 	web := r.Group("/web")
 	{
 		web.GET("/", DisplayGeoIPInfo)
@@ -51,21 +60,12 @@ func setupWebRoutes(r *gin.Engine) {
 
 	// Serve static files via pkger's fs
 	r.StaticFS("/static", pkger.Dir("/static"))
-
-	// Explicitly include /templates
-	pkger.Include("/templates")
-	// Load HTML templates
-	t, err := utils.ParseTemplates("/templates")
-	if err != nil {
-		panic(err)
-	}
-	r.SetHTMLTemplate(t)
 }
 
 // SetupRouter returns a configured router
 func SetupRouter() *gin.Engine {
 	router := newRouter()
-	setupAPIRoutes(router)
 	setupWebRoutes(router)
+	setupAPIRoutes(router)
 	return router
 }
