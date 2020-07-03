@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/markbates/pkger"
+	"gopkg.in/unrolled/secure.v1"
 )
 
 func newRouter() *gin.Engine {
@@ -30,11 +31,48 @@ func setupAPIRoutes(r *gin.Engine) {
 	}
 }
 
+func addSecurityHeaders(r *gin.Engine) {
+	secureMiddleware := secure.New(secure.Options{
+		STSSeconds:              31536000,
+		STSIncludeSubdomains:    true,
+		STSPreload:              false,
+		ForceSTSHeader:          true,
+		ContentTypeNosniff:      true,
+		BrowserXssFilter:        true,
+		ReferrerPolicy:          "same-origin",
+		FeaturePolicy:           "vibrate 'none';",
+		CustomFrameOptionsValue: "SAMEORIGIN",
+		FrameDeny:               true,
+		ContentSecurityPolicy:   "default-src 'self' https://api.mapbox.com 'unsafe-inline'; img-src 'self' https://api.mapbox.com data:",
+	})
+
+	secureFunc := func() gin.HandlerFunc {
+		return func(c *gin.Context) {
+			err := secureMiddleware.Process(c.Writer, c.Request)
+
+			// If there was an error, do not continue.
+			if err != nil {
+				c.Abort()
+				return
+			}
+
+			// Avoid header rewrite if response is a redirection.
+			if status := c.Writer.Status(); status > 300 && status < 399 {
+				c.Abort()
+			}
+		}
+	}()
+
+	r.Use(secureFunc)
+}
+
 func setupWebRoutes(r *gin.Engine) {
 	webEnv := os.Getenv("WEB")
 	if !(webEnv == "true" || webEnv == "") {
 		return
 	}
+
+	addSecurityHeaders(r)
 
 	// Explicitly include /templates
 	pkger.Include("/templates")
