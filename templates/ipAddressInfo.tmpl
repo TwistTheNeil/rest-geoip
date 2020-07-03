@@ -3,101 +3,128 @@
 <div class="container justify-content-center align-items-center">
   <div class="card">
     <div class="card-header">
-      {{.IP}}
+      {{.record.IP}}
     </div>
     <div class="card-body">
-      <table class="table table-borderless table-hover table-sm">
-      <tbody>
-        <tr>
-          <td>
-            Country
-          </td>
-          <td>
-            {{.Country.ISOCode}}
-          </td>
-        </tr>
+      <div class="row">
+        <div class="col-lg-6">
+          <table class="table table-borderless table-hover table-sm">
+          <tbody>
+            <tr>
+              <td>
+                Country
+              </td>
+              <td>
+                {{.record.Country.ISOCode}}
+              </td>
+            </tr>
 
-        <tr>
-          <td>
-            EU
-          </td>
-          <td>
-            {{if .Country.IsInEuropeanUnion}}
-              Yes
-            {{else}}
-              No
-            {{end}}
-          </td>
-        </tr>
+            <tr>
+              <td>
+                EU
+              </td>
+              <td>
+                {{if .record.Country.IsInEuropeanUnion}}
+                  Yes
+                {{else}}
+                  No
+                {{end}}
+              </td>
+            </tr>
 
-        <tr>
-          <td>
-            City
-          </td>
-          <td>
-            {{range $key, $value := .City.Names}}
-              {{$key}}:{{$value}}</br>
-            {{end}}
-          </td>
-        </tr>
+            <tr>
+              <td>
+                City
+              </td>
+              <td>
+                {{range $key, $value := .record.City.Names}}
+                  {{$key}}:{{$value}}</br>
+                {{end}}
+              </td>
+            </tr>
 
-        <tr>
-          <td>
-            Latitude
-          </td>
-          <td>
-            {{.Location.Latitude}}
-          </td>
-        </tr>
+            <tr>
+              <td>
+                Latitude
+              </td>
+              <td>
+                {{.record.Location.Latitude}}
+              </td>
+            </tr>
 
-        <tr>
-          <td>
-            Longitude
-          </td>
-          <td>
-            {{.Location.Longitude}}
-          </td>
-        </tr>
+            <tr>
+              <td>
+                Longitude
+              </td>
+              <td>
+                {{.record.Location.Longitude}}
+              </td>
+            </tr>
 
-        <tr>
-          <td>
-            Time Zone
-          </td>
-          <td>
-            {{.Location.TimeZone}}
-          </td>
-        </tr>
+            <tr>
+              <td>
+                Time Zone
+              </td>
+              <td>
+                {{.record.Location.TimeZone}}
+              </td>
+            </tr>
 
-        <tr>
-          <td>
-            Approx. Zip Code
-          </td>
-          <td>
-            {{.Postal.Code}}
-          </td>
-        </tr>
+            <tr>
+              <td>
+                Approx. Zip Code
+              </td>
+              <td>
+                {{.record.Postal.Code}}
+              </td>
+            </tr>
 
-        <tr>
-          <td>
-            Anonymous Proxy
-          </td>
-          <td>
-            {{.Traits.IsAnonymousProxy}}
-          </td>
-        </tr>
+            <tr>
+              <td>
+                Anonymous Proxy
+              </td>
+              <td>
+                {{.record.Traits.IsAnonymousProxy}}
+              </td>
+            </tr>
 
-        <tr>
-          <td>
-            Satellite Provider
-          </td>
-          <td>
-            {{.Traits.IsSatelliteProvider}}
-          </td>
-        </tr>
-        </tbody>
-      </table>  
+            <tr>
+              <td>
+                Satellite Provider
+              </td>
+              <td>
+                {{.record.Traits.IsSatelliteProvider}}
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-lg-6">
+          <div id="mapid" style="height: 500px"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+<script>
+
+  var coordinates = [{{.record.Location.Latitude}}, {{.record.Location.Longitude}}];
+
+  var mymap = L.map('mapid').setView(coordinates, 8);
+
+  L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={{.mapbox_access_token}}', {
+    maxZoom: 18,
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+      '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+      'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1
+  }).addTo(mymap);
+
+  L.marker(coordinates).addTo(mymap);
+
+</script>
 {{template "foot" .}}
 {{end}}

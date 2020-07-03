@@ -6,6 +6,7 @@ import (
 	"rest-geoip/maxmind"
 
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -65,7 +66,10 @@ func DisplayGeoIPInfo(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "ipAddressInfo", record)
+	c.HTML(http.StatusOK, "ipAddressInfo", gin.H{
+		"record":              record,
+		"mapbox_access_token": os.Getenv("MAPBOX_ACCESS_TOKEN"),
+	})
 }
 
 // UpdateMaxmindDB updates the db
