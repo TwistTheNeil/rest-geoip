@@ -1,0 +1,4 @@
+.env
+static/3rdparty/*
+*.mmdb
+.git*
