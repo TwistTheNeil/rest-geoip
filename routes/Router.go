@@ -24,9 +24,9 @@ func newRouter() *gin.Engine {
 func setupAPIRoutes(r *gin.Engine) {
 	api := r.Group("/api")
 	{
-		api.GET("/geoip", GeoIPInfo)
 		api.GET("/ip", IPAddress)
-		api.GET("/ip/:address", GeoIPInfo)
+		api.GET("/geoip", GeoIPInfo)
+		api.GET("/geoip/:address", GeoIPInfo)
 		api.POST("/update", UpdateMaxmindDB)
 	}
 }
