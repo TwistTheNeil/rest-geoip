@@ -2,5 +2,4 @@ rest-geoip
 GeoLite2*
 db.mmdb
 .env
-static/bootstrap*
-static/leaflet*
+static/3rdparty
