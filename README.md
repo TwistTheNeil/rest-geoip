@@ -24,7 +24,6 @@ server {
 	include ssl.conf;
 
 	location /api/update {
-		allow 127.0.0.1;
 		deny all;
 	}
 
