@@ -16,8 +16,8 @@ pre_init() {
 init_bootstrap() {
     "${WGET}" -q "https://github.com/twbs/bootstrap/releases/download/v${BOOTSTRAP_VERSION}/bootstrap-${BOOTSTRAP_VERSION}-dist.zip" -O "${BOOTSTRAP_OUT}"
     unzip -o -d "${STATIC_DIR}" "${BOOTSTRAP_OUT}" \
-        bootstrap-4.5.0-dist/css/bootstrap.min.css \
-        bootstrap-4.5.0-dist/css/bootstrap.min.css.map
+        bootstrap-${BOOTSTRAP_VERSION}-dist/css/bootstrap.min.css \
+        bootstrap-${BOOTSTRAP_VERSION}-dist/css/bootstrap.min.css.map
 }
 
 init_leaflet() {
