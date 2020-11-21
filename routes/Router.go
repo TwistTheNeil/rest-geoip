@@ -3,7 +3,11 @@ package routes
 import (
 	"os"
 	"rest-geoip/utils"
+	"time"
 
+	"github.com/didip/tollbooth"
+	"github.com/didip/tollbooth/limiter"
+	"github.com/didip/tollbooth_gin"
 	"github.com/gin-gonic/gin"
 	"github.com/markbates/pkger"
 	"gopkg.in/unrolled/secure.v1"
@@ -22,6 +26,13 @@ func newRouter() *gin.Engine {
 }
 
 func setupAPIRoutes(r *gin.Engine) {
+	// Create a limiter struct.
+	limiter := tollbooth.NewLimiter(1, &limiter.ExpirableOptions{DefaultExpirationTTL: time.Hour})
+
+	// Limit API requests
+	// No one really needs to request their deails every second
+	r.Use(tollbooth_gin.LimitHandler(limiter))
+
 	api := r.Group("/api")
 	{
 		api.GET("/ip", IPAddress)
