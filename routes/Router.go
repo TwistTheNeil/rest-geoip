@@ -2,6 +2,7 @@ package routes
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"rest-geoip/utils"
 	"time"
@@ -14,16 +15,36 @@ import (
 	"gopkg.in/unrolled/secure.v1"
 )
 
-func newRouter() *gin.Engine {
-	logging := os.Getenv("LOGGING")
+func newRouter() (*gin.Engine, *http.Server) {
+	listenAddress := "localhost"
+	listenPort := "8080"
 
-	if logging == "" || logging == "true" {
-		return gin.Default()
+	if os.Getenv("LISTEN_ADDRESS") != "" {
+		listenAddress = os.Getenv("LISTEN_ADDRESS")
+	}
+	if os.Getenv("LISTEN_PORT") != "" {
+		listenPort = os.Getenv("LISTEN_PORT")
 	}
 
-	r := gin.New()
-	r.Use(gin.Recovery())
-	return r
+	logging := os.Getenv("LOGGING")
+
+	var r *gin.Engine
+	if logging == "" || logging == "true" {
+		r = gin.Default()
+	} else {
+		r = gin.New()
+		r.Use(gin.Recovery())
+	}
+
+	s := &http.Server{
+		Addr:           listenAddress + ":" + listenPort,
+		Handler:        r,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+
+	return r, s
 }
 
 func validateAccess(c *gin.Context) {
@@ -123,7 +144,7 @@ func setupWebRoutes(r *gin.Engine) {
 }
 
 // SetupRouter returns a configured router
-func SetupRouter() *gin.Engine {
+func SetupRouter() *http.Server {
 	// Set up an API key if there is none set
 	key, exists := os.LookupEnv("API_KEY")
 	if !exists || key == "" {
@@ -140,8 +161,8 @@ func SetupRouter() *gin.Engine {
 		}
 	}
 
-	router := newRouter()
+	router, server := newRouter()
 	setupWebRoutes(router)
 	setupAPIRoutes(router)
-	return router
+	return server
 }
