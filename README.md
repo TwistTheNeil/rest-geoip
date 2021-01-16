@@ -11,7 +11,10 @@ GET  /api/geoip/:address  : Return Geoip information for "address"
 POST /api/update          : Update the Maxmind database
 ```
 
-The application doesn't provide a database. POSTing to `/api/update` will update the database. Ideally, this endpoint should be protected via Nginx or whatever is available.
+The application doesn't provide a database. POSTing to `/api/update` will update the database and will ideally be protected by an api key. If `API_KEY` is not set, then the application will set one on startup and notify via STDOUT
+
+### Screenshot of optional webapp
+![screenshot](docs/screenshot.png)
 
 ### Example nginx config
 ```
@@ -22,10 +25,6 @@ server {
 	listen 443 ssl;
 
 	include ssl.conf;
-
-	location /api/update {
-		deny all;
-	}
 
 	location / {
 	  proxy_set_header        X-Real-IP $remote_addr;
