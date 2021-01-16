@@ -10,6 +10,7 @@ require (
 	github.com/markbates/pkger v0.16.0
 	github.com/oschwald/maxminddb-golang v1.6.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
+	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.5.1 // indirect
 	golang.org/x/sys v0.0.0-20200302150141-5c8b2ff67527 // indirect
 	golang.org/x/time v0.0.0-20200630173020-3af7569d3a1e // indirect

@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/oschwald/maxminddb-golang"
+	"github.com/spf13/viper"
 )
 
 // Record captures the data resulting from a query to the maxmind database
@@ -41,7 +42,7 @@ type Record struct {
 func Info(ip net.IP) (Record, error) {
 	var record Record
 
-	db, err := maxminddb.Open(os.Getenv("MAXMIND_DB_LOCATION") + os.Getenv("MAXMIND_DB"))
+	db, err := maxminddb.Open(viper.GetString("MAXMIND_DB_LOCATION") + viper.GetString("MAXMIND_DB"))
 	if err != nil {
 		return record, customerrors.ErrMMDBNotFound
 	}
@@ -58,8 +59,8 @@ func Info(ip net.IP) (Record, error) {
 
 // DownloadAndUpdate the maxmind database
 func DownloadAndUpdate() error {
-	dbURL := "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=" + os.Getenv("MAXMIND_LICENSE") + "&suffix=tar.gz"
-	md5URL := "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=" + os.Getenv("MAXMIND_LICENSE") + "&suffix=tar.gz.md5"
+	dbURL := "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=" + viper.GetString("MAXMIND_LICENSE") + "&suffix=tar.gz"
+	md5URL := "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=" + viper.GetString("MAXMIND_LICENSE") + "&suffix=tar.gz.md5"
 	const dbDest = "/tmp/Geolite.tar.gz"
 	const md5Dest = "/tmp/Geolite.tar.gz.md5"
 	const tempDir = "/tmp/"
@@ -110,7 +111,7 @@ func DownloadAndUpdate() error {
 		return err
 	}
 
-	if err = os.Rename(geoCityDBPath, os.Getenv("MAXMIND_DB_LOCATION")+"/"+os.Getenv("MAXMIND_DB")); err != nil {
+	if err = os.Rename(geoCityDBPath, viper.GetString("MAXMIND_DB_LOCATION")+"/"+viper.GetString("MAXMIND_DB")); err != nil {
 		return err
 	}
 

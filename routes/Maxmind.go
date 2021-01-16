@@ -6,9 +6,9 @@ import (
 	"rest-geoip/maxmind"
 
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 func relevantIPAddress(c *gin.Context) (net.IP, error) {
@@ -68,7 +68,7 @@ func DisplayGeoIPInfo(c *gin.Context) {
 
 	c.HTML(http.StatusOK, "ipAddressInfo", gin.H{
 		"record":              record,
-		"mapbox_access_token": os.Getenv("MAPBOX_ACCESS_TOKEN"),
+		"mapbox_access_token": viper.GetString("MAPBOX_ACCESS_TOKEN"),
 	})
 }
 

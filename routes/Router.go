@@ -3,7 +3,6 @@ package routes
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"rest-geoip/utils"
 	"time"
 
@@ -12,24 +11,24 @@ import (
 	"github.com/didip/tollbooth_gin"
 	"github.com/gin-gonic/gin"
 	"github.com/markbates/pkger"
+	"github.com/spf13/viper"
 	"gopkg.in/unrolled/secure.v1"
 )
 
 func newRouter() (*gin.Engine, *http.Server) {
-	listenAddress := "localhost"
-	listenPort := "8080"
-
-	if os.Getenv("LISTEN_ADDRESS") != "" {
-		listenAddress = os.Getenv("LISTEN_ADDRESS")
-	}
-	if os.Getenv("LISTEN_PORT") != "" {
-		listenPort = os.Getenv("LISTEN_PORT")
-	}
-
-	logging := os.Getenv("LOGGING")
-
+	var listenAddress string
+	var listenPort string
 	var r *gin.Engine
-	if logging == "" || logging == "true" {
+
+	if listenAddress := viper.GetString("LISTEN_ADDRESS"); listenAddress == "" {
+		listenAddress = "localhost"
+	}
+
+	if listenPort := viper.GetString("LISTEN_PORT"); listenPort == "" {
+		listenPort = "8080"
+	}
+
+	if !viper.GetBool("LOGGING") {
 		r = gin.Default()
 	} else {
 		r = gin.New()
@@ -49,8 +48,8 @@ func newRouter() (*gin.Engine, *http.Server) {
 
 func validateAccess(c *gin.Context) {
 	actualKey := c.Request.Header.Get("X-API-KEY")
-	expectedKey, exists := os.LookupEnv("API_KEY")
-	if exists && actualKey == expectedKey {
+	expectedKey := viper.GetString("API_KEY")
+	if actualKey == expectedKey {
 		c.Next()
 		return
 	}
@@ -110,8 +109,7 @@ func addSecurityHeaders(r *gin.Engine) {
 }
 
 func setupWebRoutes(r *gin.Engine) {
-	webEnv := os.Getenv("WEB")
-	if !(webEnv == "true" || webEnv == "") {
+	if !viper.GetBool("WEB") {
 		return
 	}
 
@@ -146,18 +144,13 @@ func setupWebRoutes(r *gin.Engine) {
 // SetupRouter returns a configured router
 func SetupRouter() *http.Server {
 	// Set up an API key if there is none set
-	key, exists := os.LookupEnv("API_KEY")
-	if !exists || key == "" {
+	if viper.GetString("API_KEY") == "" {
 		key, err := utils.GenerateKey(512)
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			if setErr := os.Setenv("API_KEY", key); setErr != nil {
-				fmt.Println("No API KEY set")
-				fmt.Println(setErr)
-			} else {
-				fmt.Printf("API KEY: %s\n", key)
-			}
+			viper.Set("API_KEY", key)
+			fmt.Printf("API KEY: %s\n", key)
 		}
 	}
 
