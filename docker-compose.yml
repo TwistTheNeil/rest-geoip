@@ -7,6 +7,7 @@ services:
     ports:
       - 8080:8080
     environment:
+      - API_KEY=${API_KEY}
       - MAXMIND_LICENSE=${MAXMIND_LICENSE}
       - MAXMIND_DB_LOCATION=/opt/
       - MAXMIND_DB=GeoLite2-City.mmdb
