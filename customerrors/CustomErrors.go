@@ -16,3 +16,6 @@ var ErrMMDBNotFound = errors.New("Unable to read Maxmind DB")
 
 // ErrInvalidIPAddress complains about an invalid ip address
 var ErrInvalidIPAddress = errors.New("IP Address passed is invalid")
+
+// ErrGeneratePassword complains about not being able to generate a key
+var ErrGeneratePassword = errors.New("Couldn't generate api key. Handle access appropriately")

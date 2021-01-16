@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"os"
 	"rest-geoip/utils"
 	"time"
@@ -25,6 +26,16 @@ func newRouter() *gin.Engine {
 	return r
 }
 
+func validateAccess(c *gin.Context) {
+	actualKey := c.Request.Header.Get("X-API-KEY")
+	expectedKey, exists := os.LookupEnv("API_KEY")
+	if exists && actualKey == expectedKey {
+		c.Next()
+		return
+	}
+	c.AbortWithStatus(401)
+}
+
 func setupAPIRoutes(r *gin.Engine) {
 	// Create a limiter struct.
 	limiter := tollbooth.NewLimiter(1, &limiter.ExpirableOptions{DefaultExpirationTTL: time.Hour})
@@ -38,7 +49,7 @@ func setupAPIRoutes(r *gin.Engine) {
 		api.GET("/ip", IPAddress)
 		api.GET("/geoip", GeoIPInfo)
 		api.GET("/geoip/:address", GeoIPInfo)
-		api.POST("/update", UpdateMaxmindDB)
+		api.POST("/update", validateAccess, UpdateMaxmindDB)
 	}
 }
 
@@ -113,6 +124,22 @@ func setupWebRoutes(r *gin.Engine) {
 
 // SetupRouter returns a configured router
 func SetupRouter() *gin.Engine {
+	// Set up an API key if there is none set
+	key, exists := os.LookupEnv("API_KEY")
+	if !exists || key == "" {
+		key, err := utils.GenerateKey(512)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			if setErr := os.Setenv("API_KEY", key); setErr != nil {
+				fmt.Println("No API KEY set")
+				fmt.Println(setErr)
+			} else {
+				fmt.Printf("API KEY: %s\n", key)
+			}
+		}
+	}
+
 	router := newRouter()
 	setupWebRoutes(router)
 	setupAPIRoutes(router)
