@@ -1,6 +1,7 @@
 package maxmind
 
 import (
+	"fmt"
 	"net"
 	"os"
 	"path/filepath"
@@ -11,6 +12,14 @@ import (
 	"github.com/oschwald/maxminddb-golang"
 	"github.com/spf13/viper"
 )
+
+// DB struct
+type DB struct {
+	db *maxminddb.Reader
+}
+
+var instance *DB
+var once sync.Once
 
 // Record captures the data resulting from a query to the maxmind database
 type Record struct {
@@ -38,17 +47,29 @@ type Record struct {
 	IP string
 }
 
-// Info returns results from a maxmind db lookup
-func Info(ip net.IP) (Record, error) {
+// Open a maxmind database
+func (m *DB) Open() error {
+	var err error
+	dbLocation := viper.GetString("MAXMIND_DB_LOCATION") + viper.GetString("MAXMIND_DB")
+	fmt.Printf("Opening db %s\n", dbLocation)
+
+	m.db, err = maxminddb.Open(dbLocation)
+	if err != nil {
+		return customerrors.ErrMMDBNotFound
+	}
+	return nil
+}
+
+// Close a maxmind database
+func (m *DB) Close() error {
+	return m.db.Close()
+}
+
+// Lookup results from a maxmind db lookup
+func (m *DB) Lookup(ip net.IP) (Record, error) {
 	var record Record
 
-	db, err := maxminddb.Open(viper.GetString("MAXMIND_DB_LOCATION") + viper.GetString("MAXMIND_DB"))
-	if err != nil {
-		return record, customerrors.ErrMMDBNotFound
-	}
-	defer db.Close()
-
-	err = db.Lookup(ip, &record)
+	err := m.db.Lookup(ip, &record)
 	if err != nil {
 		return record, err
 	}
@@ -128,4 +149,12 @@ func DownloadAndUpdate() error {
 	}
 
 	return nil
+}
+
+// GetInstance of a maxmindReader
+func GetInstance() *DB {
+	once.Do(func() {
+		instance = &DB{}
+	})
+	return instance
 }

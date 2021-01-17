@@ -40,7 +40,7 @@ func GeoIPInfo(c *gin.Context) {
 		return
 	}
 
-	record, err := maxmind.Info(ip)
+	record, err := maxmind.GetInstance().Lookup(ip)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -61,7 +61,7 @@ func DisplayGeoIPInfo(c *gin.Context) {
 		return
 	}
 
-	record, err := maxmind.Info(ip)
+	record, err := maxmind.GetInstance().Lookup(ip)
 
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "error", gin.H{

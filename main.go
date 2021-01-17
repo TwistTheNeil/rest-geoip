@@ -1,7 +1,9 @@
 package main
 
 import (
+	"rest-geoip/maxmind"
 	"rest-geoip/routes"
+	"rest-geoip/signals"
 
 	"github.com/spf13/viper"
 )
@@ -14,6 +16,9 @@ func main() {
 	viper.SetDefault("LISTEN_ADDRESS", "0.0.0.0")
 	viper.SetDefault("LISTEN_PORT", "8080")
 	viper.AutomaticEnv()
+
+	signals.TrapSignals()
+	maxmind.GetInstance().Open()
 
 	server := routes.SetupRouter()
 	if err := server.ListenAndServe(); err != nil {
