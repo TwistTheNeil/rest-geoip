@@ -16,17 +16,8 @@ import (
 )
 
 func newRouter() (*gin.Engine, *http.Server) {
-	var listenAddress string
-	var listenPort string
+	listenAddress := viper.GetString("LISTEN_ADDRESS") + ":" + viper.GetString("LISTEN_PORT")
 	var r *gin.Engine
-
-	if listenAddress := viper.GetString("LISTEN_ADDRESS"); listenAddress == "" {
-		listenAddress = "localhost"
-	}
-
-	if listenPort := viper.GetString("LISTEN_PORT"); listenPort == "" {
-		listenPort = "8080"
-	}
 
 	if !viper.GetBool("LOGGING") {
 		r = gin.Default()
@@ -36,7 +27,7 @@ func newRouter() (*gin.Engine, *http.Server) {
 	}
 
 	s := &http.Server{
-		Addr:           listenAddress + ":" + listenPort,
+		Addr:           listenAddress,
 		Handler:        r,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
