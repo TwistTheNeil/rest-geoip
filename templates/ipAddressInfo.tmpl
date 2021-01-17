@@ -99,9 +99,19 @@
             </tbody>
           </table>
         </div>
+        {{if .mapbox_access_token}}
         <div class="col-lg-6">
           <div id="mapid" style="height: 500px"></div>
         </div>
+        {{else}}
+        <div class="col-lg-6">
+          <div>
+            <p>
+              Map feature is not enabled
+            </p>
+          </div>
+        </div>
+        {{end}}
       </div>
     </div>
   </div>
