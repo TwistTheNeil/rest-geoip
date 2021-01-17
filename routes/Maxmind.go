@@ -11,6 +11,10 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Return a relevant IP address.
+// If there is a req.param with address, then the user
+// is querying for an IP address's details
+// If not, then show them their own
 func relevantIPAddress(c *gin.Context) (net.IP, error) {
 	ipQuery := c.ClientIP()
 	if c.Param("address") != "" {
