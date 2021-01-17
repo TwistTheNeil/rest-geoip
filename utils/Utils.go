@@ -179,6 +179,22 @@ func ExtractTarGz(r io.Reader, dest string) error {
 	return nil
 }
 
+// MoveFile moves a file
+func MoveFile(source, dest string) error {
+	// #nosec G304
+	input, err := ioutil.ReadFile(source)
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(dest, input, 0600)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // ParseTemplates parses all templates
 func ParseTemplates(root string) (*template.Template, error) {
 	t := template.New("")

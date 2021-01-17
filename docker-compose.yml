@@ -6,6 +6,8 @@ services:
       context: .
     ports:
       - 8080:8080
+    volumes:
+      - ./db:/opt/
     environment:
       - API_KEY=${API_KEY}
       - MAXMIND_LICENSE=${MAXMIND_LICENSE}

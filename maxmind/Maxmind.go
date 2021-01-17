@@ -61,9 +61,8 @@ func Info(ip net.IP) (Record, error) {
 func DownloadAndUpdate() error {
 	dbURL := "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=" + viper.GetString("MAXMIND_LICENSE") + "&suffix=tar.gz"
 	md5URL := "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=" + viper.GetString("MAXMIND_LICENSE") + "&suffix=tar.gz.md5"
-	const dbDest = "/tmp/Geolite.tar.gz"
-	const md5Dest = "/tmp/Geolite.tar.gz.md5"
-	const tempDir = "/tmp/"
+	dbDest := viper.GetString("MAXMIND_DB_LOCATION") + "/Geolite.tar.gz"
+	md5Dest := viper.GetString("MAXMIND_DB_LOCATION") + "/Geolite.tar.gz.md5"
 
 	// Make channels to pass errors in WaitGroup
 	downloadErrors := make(chan error)
@@ -96,31 +95,32 @@ func DownloadAndUpdate() error {
 	}
 
 	// Prepare a reader for extracting the tar.gz
-	r, err := os.Open(dbDest)
+	r, err := os.Open(dbDest) // #nosec G304
 	if err != nil {
 		return err
 	}
 
-	if err := utils.ExtractTarGz(r, tempDir); err != nil {
+	if err := utils.ExtractTarGz(r, viper.GetString("MAXMIND_DB_LOCATION")); err != nil {
 		return err
 	}
 
 	// Move mmdb to MAXMIND_DB_LOCATION
-	geoCityDBPath, _, err := utils.FindFile(tempDir, "mmdb$")
+	geoCityDBPath, _, err := utils.FindFile(viper.GetString("MAXMIND_DB_LOCATION"), "mmdb$")
 	if err != nil {
 		return err
 	}
 
-	if err = os.Rename(geoCityDBPath, viper.GetString("MAXMIND_DB_LOCATION")+"/"+viper.GetString("MAXMIND_DB")); err != nil {
+	if err = utils.MoveFile(geoCityDBPath, viper.GetString("MAXMIND_DB_LOCATION")+"/"+viper.GetString("MAXMIND_DB")); err != nil {
 		return err
 	}
 
 	// Remove all temporary downloaded files
-	matches, err := filepath.Glob(tempDir + "Geo*")
+	matches, err := filepath.Glob(viper.GetString("MAXMIND_DB_LOCATION") + "GeoLite2-City_*")
 	if err != nil {
 		return err
 	}
-
+	matches = append(matches, dbDest)
+	matches = append(matches, md5Dest)
 	for _, v := range matches {
 		if err := os.RemoveAll(v); err != nil {
 			return err
