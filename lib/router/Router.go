@@ -108,7 +108,7 @@ func setupWebRoutes(r *gin.Engine) {
 	addSecurityHeaders(r)
 
 	// Explicitly include /templates
-	pkger.Include("/templates")
+	pkger.Include("/templates") //nolint
 	// Load HTML templates
 	t, err := utils.ParseTemplates("/templates")
 	if err != nil {
