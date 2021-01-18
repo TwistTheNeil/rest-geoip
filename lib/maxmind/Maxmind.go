@@ -5,8 +5,8 @@ import (
 	"net"
 	"os"
 	"path/filepath"
-	"rest-geoip/customerrors"
-	"rest-geoip/utils"
+	"rest-geoip/lib/customerrors"
+	"rest-geoip/lib/utils"
 	"sync"
 
 	"github.com/oschwald/maxminddb-golang"

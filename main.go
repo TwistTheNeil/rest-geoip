@@ -1,9 +1,9 @@
 package main
 
 import (
-	"rest-geoip/maxmind"
-	"rest-geoip/routes"
-	"rest-geoip/signals"
+	"rest-geoip/lib/maxmind"
+	"rest-geoip/lib/router"
+	"rest-geoip/lib/signals"
 
 	"github.com/spf13/viper"
 )
@@ -20,7 +20,7 @@ func main() {
 	signals.Trap()
 	maxmind.GetInstance().Open()
 
-	server := routes.SetupRouter()
+	server := router.SetupRouter()
 	if err := server.ListenAndServe(); err != nil {
 		panic(err)
 	}

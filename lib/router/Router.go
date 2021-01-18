@@ -1,9 +1,10 @@
-package routes
+package router
 
 import (
 	"fmt"
 	"net/http"
-	"rest-geoip/utils"
+	"rest-geoip/lib/utils"
+	"rest-geoip/routes"
 	"time"
 
 	"github.com/didip/tollbooth"
@@ -57,10 +58,10 @@ func setupAPIRoutes(r *gin.Engine) {
 
 	api := r.Group("/api")
 	{
-		api.GET("/ip", IPAddress)
-		api.GET("/geoip", GeoIPInfo)
-		api.GET("/geoip/:address", GeoIPInfo)
-		api.POST("/update", validateAccess, UpdateMaxmindDB)
+		api.GET("/ip", routes.IPAddress)
+		api.GET("/geoip", routes.GeoIPInfo)
+		api.GET("/geoip/:address", routes.GeoIPInfo)
+		api.POST("/update", validateAccess, routes.UpdateMaxmindDB)
 	}
 }
 
@@ -117,9 +118,9 @@ func setupWebRoutes(r *gin.Engine) {
 
 	web := r.Group("/web")
 	{
-		web.GET("/", DisplayGeoIPInfo)
-		web.GET("/:address", DisplayGeoIPInfo)
-		web.POST("/", SearchIPAddressInfo)
+		web.GET("/", routes.DisplayGeoIPInfo)
+		web.GET("/:address", routes.DisplayGeoIPInfo)
+		web.POST("/", routes.SearchIPAddressInfo)
 	}
 
 	// Redirects

@@ -3,7 +3,7 @@ package utils
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"rest-geoip/customerrors"
+	"rest-geoip/lib/customerrors"
 )
 
 // GenerateKey generates a crypto secure key

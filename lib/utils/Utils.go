@@ -16,7 +16,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"rest-geoip/customerrors"
+	"rest-geoip/lib/customerrors"
 	"sync"
 
 	"github.com/markbates/pkger"

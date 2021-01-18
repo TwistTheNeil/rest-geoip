@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"rest-geoip/maxmind"
+	"rest-geoip/lib/maxmind"
 	"syscall"
 )
 

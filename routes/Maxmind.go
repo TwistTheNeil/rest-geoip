@@ -2,8 +2,8 @@ package routes
 
 import (
 	"net"
-	"rest-geoip/customerrors"
-	"rest-geoip/maxmind"
+	"rest-geoip/lib/customerrors"
+	"rest-geoip/lib/maxmind"
 
 	"net/http"
 
