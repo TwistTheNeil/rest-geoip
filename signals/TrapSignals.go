@@ -8,10 +8,10 @@ import (
 	"syscall"
 )
 
-// TrapSignals traps signals for these purposes:
+// Trap traps signals for these purposes:
 // SIGUSR1: Update database
 // SIGUSR2: Close database
-func TrapSignals() {
+func Trap() {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGUSR1, syscall.SIGUSR2)
 

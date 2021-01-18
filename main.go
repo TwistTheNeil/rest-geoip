@@ -17,7 +17,7 @@ func main() {
 	viper.SetDefault("LISTEN_PORT", "8080")
 	viper.AutomaticEnv()
 
-	signals.TrapSignals()
+	signals.Trap()
 	maxmind.GetInstance().Open()
 
 	server := routes.SetupRouter()
