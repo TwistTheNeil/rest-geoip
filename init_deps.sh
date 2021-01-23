@@ -3,7 +3,7 @@
 set -e
 
 WGET=$(which wget)
-BOOTSTRAP_VERSION="4.5.0"
+BOOTSTRAP_VERSION="5.0.0-beta1"
 BOOTSTRAP_OUT="bootstrap.zip"
 LEAFLET_VERSION="1.6.0"
 LEAFLET_OUT="leaflet.zip"
