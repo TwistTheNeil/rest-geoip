@@ -33,7 +33,9 @@ func Trap() {
 				}
 			case syscall.SIGUSR2:
 				fmt.Println("SIGUSR2 called. Closing maxmind db")
-				maxmind.GetInstance().Close()
+				if err := maxmind.GetInstance().Close(); err != nil {
+					fmt.Println("Failed to close maxmind database")
+				}
 			}
 		}
 	}()
