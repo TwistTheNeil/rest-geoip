@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"rest-geoip/lib/maxmind"
+	"rest-geoip/lib/utils"
 	"syscall"
 )
 
@@ -23,7 +24,7 @@ func Trap() {
 				if err := maxmind.GetInstance().Close(); err != nil {
 					fmt.Println("Failed to close maxmind database")
 				}
-				if err := maxmind.DownloadAndUpdate(); err != nil {
+				if err := utils.DownloadAndUpdate(); err != nil {
 					fmt.Println("Failed to update maxmind database")
 					continue
 				}

@@ -4,6 +4,7 @@ import (
 	"net"
 	"rest-geoip/lib/customerrors"
 	"rest-geoip/lib/maxmind"
+	"rest-geoip/lib/utils"
 
 	"net/http"
 
@@ -78,7 +79,7 @@ func DisplayGeoIPInfo(c *gin.Context) {
 
 // UpdateMaxmindDB updates the db
 func UpdateMaxmindDB(c *gin.Context) {
-	if err := maxmind.DownloadAndUpdate(); err != nil {
+	if err := utils.DownloadAndUpdate(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
