@@ -8,10 +8,10 @@ The webapp provides general geoip information. There is also an api available
 GET  /api/ip              : Return client IP Address
 GET  /api/geoip           : Return client Geoip information
 GET  /api/geoip/:address  : Return Geoip information for "address"
-POST /api/update          : Update the Maxmind database
+PUT  /api/update          : Update the Maxmind database
 ```
 
-The application doesn't provide a database. POSTing to `/api/update` will update the database and will ideally be protected by an api key. If `API_KEY` is not set, then the application will set one on startup and notify via STDOUT
+The application doesn't provide a database. A `PUT` request to `/api/update` will update the database and will ideally be protected by an api key (header: `X-API-KEY`). If `API_KEY` env var is not set, then the application will set one on startup and notify via STDOUT
 
 ### Screenshot of optional webapp
 ![screenshot](docs/screenshot.png)

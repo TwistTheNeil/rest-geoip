@@ -61,7 +61,7 @@ func setupAPIRoutes(r *gin.Engine) {
 		api.GET("/ip", routes.IPAddress)
 		api.GET("/geoip", routes.GeoIPInfo)
 		api.GET("/geoip/:address", routes.GeoIPInfo)
-		api.POST("/update", validateAccess, routes.UpdateMaxmindDB)
+		api.PUT("/update", validateAccess, routes.UpdateMaxmindDB)
 	}
 }
 
