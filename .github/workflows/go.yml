@@ -22,14 +22,12 @@ jobs:
       uses: actions/checkout@v1
       with:
         fetch-depth: 1
-        path: go/src/github.com/TwistTheNeil/rest-geoip
 
     - name: Run Gosec
       run: |
         pwd
         echo ${GOPATH}
         echo ${GOROOT}
-        cd go/src/github.com/TwistTheNeil/rest-geoip
         go get github.com/securego/gosec/cmd/gosec
         $GOPATH/bin/gosec ./...
       env:
