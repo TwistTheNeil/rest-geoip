@@ -18,8 +18,11 @@ PUT  /api/update          : Update the Maxmind database
 
 The application doesn't provide a database. A `PUT` request to `/api/update` will update the database and will ideally be protected by an api key (header: `X-API-KEY`). If `API_KEY` env var is not set, then the application will set one on startup and notify via STDOUT
 
-### Screenshot of optional webapp
-![screenshot](docs/screenshot.png)
+### Screenshots of optional webapp
+#### Light
+![light](docs/light.png)
+#### Dark
+![light](docs/dark.png)
 
 ### Example nginx config
 ```
