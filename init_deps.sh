@@ -7,6 +7,7 @@ BOOTSTRAP_VERSION="5.0.0-beta1"
 BOOTSTRAP_OUT="bootstrap.zip"
 LEAFLET_VERSION="1.6.0"
 LEAFLET_OUT="leaflet.zip"
+JQUERY_VERSION="3.5.1"
 STATIC_DIR="static/3rdparty"
 
 pre_init() {
@@ -26,6 +27,11 @@ init_leaflet() {
     unzip -o -d "${STATIC_DIR}/leaflet-v${LEAFLET_VERSION}" "${LEAFLET_OUT}"
 }
 
+init_jquery() {
+    mkdir -p "${STATIC_DIR}/jquery/"
+    "${WGET}" -q "https://ajax.googleapis.com/ajax/libs/jquery/${JQUERY_VERSION}/jquery.min.js" -O "${STATIC_DIR}/jquery/jquery.min.js"
+}
+
 cleanup() {
     rm -f \
         "${BOOTSTRAP_OUT}" \
@@ -35,4 +41,5 @@ cleanup() {
 pre_init
 init_bootstrap
 init_leaflet
+init_jquery
 cleanup

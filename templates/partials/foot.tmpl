@@ -1,4 +1,17 @@
 {{define "foot"}}
   </body>
+
+  <script>
+    // Set the theme on initial load
+    $(document).ready(function() {
+      if (currentTheme() === "dark") {
+        $('#theme-switch').prop('checked', true);
+        $('#dark-theme-stylesheet').removeAttr('disabled');
+      } else {
+        $('#theme-switch').removeAttr('checked');
+        $('#dark-theme-stylesheet').disabled = true;
+      }
+    });
+  </script>
 </html>
 {{end}}
