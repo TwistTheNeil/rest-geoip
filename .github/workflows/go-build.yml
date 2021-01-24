@@ -1,4 +1,4 @@
-name: gosec
+name: go-build
 
 on:
   push:
@@ -24,4 +24,13 @@ jobs:
         $GOPATH/bin/gosec ./...
       env:
         GOPATH: /home/runner/work/TwistTheNeil/go
+
+    - name: Build
+      run: |
+        go get github.com/markbates/pkger/cmd/pkger && $GOPATH/bin/pkger
+        $GOPATH/bin/pkger
+        go build -v ./...
+      env:
+        GOPATH: /home/runner/work/TwistTheNeil/go
+
 
