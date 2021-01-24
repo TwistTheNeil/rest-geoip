@@ -1,4 +1,4 @@
-name: Gosec
+name: gosec
 
 on:
   push:
@@ -18,5 +18,20 @@ jobs:
       with:
         go-version: 1.15
 
+    - name: Check out code to a GOPATH compatible directory
+      uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+        path: go/src/github.com/TwistTheNeil/rest-geoip
+
     - name: Run Gosec
-      run: go get github.com/securego/gosec/cmd/gosec && $GOPATH/bin/gosec ./...
+      run: |
+        pwd
+        echo ${GOPATH}
+        echo ${GOROOT}
+        cd go/src/github.com/TwistTheNeil/rest-geoip
+        go get github.com/securego/gosec/cmd/gosec
+        $GOPATH/bin/gosec ./...
+      env:
+        GOPATH: /home/runner/work/TwistTheNeil/go
+
