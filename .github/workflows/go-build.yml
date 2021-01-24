@@ -27,6 +27,7 @@ jobs:
 
     - name: Build
       run: |
+        bash init_deps.sh
         go get github.com/markbates/pkger/cmd/pkger && $GOPATH/bin/pkger
         $GOPATH/bin/pkger
         go build -v ./...
