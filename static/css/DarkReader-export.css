@@ -2349,10 +2349,10 @@ a.text-dark:hover {
     background-image: none;
 }
 .leaflet-control-layers-toggle {
-    background-image: url("https://ip.neilcastelino.com/static/3rdparty/leaflet-v1.6.0/images/layers.png");
+    background-image: url("/static/3rdparty/leaflet-v1.6.0/images/layers.png");
 }
 .leaflet-retina .leaflet-control-layers-toggle {
-    background-image: url("https://ip.neilcastelino.com/static/3rdparty/leaflet-v1.6.0/images/layers-2x.png");
+    background-image: url("/static/3rdparty/leaflet-v1.6.0/images/layers-2x.png");
 }
 .leaflet-control-layers-expanded {
     color: rgb(193, 188, 182);
@@ -2363,7 +2363,7 @@ a.text-dark:hover {
     border-top-color: rgb(65, 69, 71);
 }
 .leaflet-default-icon-path {
-    background-image: url("https://ip.neilcastelino.com/static/3rdparty/leaflet-v1.6.0/images/marker-icon.png");
+    background-image: url("/static/3rdparty/leaflet-v1.6.0/images/marker-icon.png");
 }
 .leaflet-container .leaflet-control-attribution {
     background-color: rgba(34, 36, 37, 0.7);
