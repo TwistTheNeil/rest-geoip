@@ -18,16 +18,8 @@ jobs:
       with:
         go-version: 1.15
 
-    - name: Check out code to a GOPATH compatible directory
-      uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
-
     - name: Run Gosec
       run: |
-        pwd
-        echo ${GOPATH}
-        echo ${GOROOT}
         go get github.com/securego/gosec/cmd/gosec
         $GOPATH/bin/gosec ./...
       env:
