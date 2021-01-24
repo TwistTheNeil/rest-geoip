@@ -5,6 +5,7 @@ import (
 	"rest-geoip/lib/customerrors"
 	"rest-geoip/lib/maxmind"
 	"rest-geoip/lib/utils"
+	"strings"
 
 	"net/http"
 
@@ -102,5 +103,5 @@ func SearchIPAddressInfo(c *gin.Context) {
 			"error": "Bad request",
 		})
 	}
-	c.Redirect(http.StatusFound, "/web/"+form.IPAddress)
+	c.Redirect(http.StatusFound, "/web/"+strings.TrimSpace(form.IPAddress))
 }
