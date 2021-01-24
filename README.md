@@ -2,6 +2,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/TwistTheNeil/rest-geoip)](https://goreportcard.com/report/github.com/TwistTheNeil/rest-geoip)
 [![Golangci-lint Status](https://github.com/TwistTheNeil/rest-geoip/workflows/golangci-lint/badge.svg)](https://github.com/TwistTheNeil/rest-geoip/actions?query=workflow%3Agolangci-lint)
+[![Docker build Status](https://github.com/TwistTheNeil/rest-geoip/workflows/Docker%20Image%20CI/badge.svg)](https://github.com/TwistTheNeil/rest-geoip/actions?query=workflow%3A%22Docker+Image+CI%22)
 
 A self hosted geoip lookup application which provides a client with information about their IP address or any other. It uses the [Maxmind](https://www.maxmind.com) GeoLite2-City database.
 
