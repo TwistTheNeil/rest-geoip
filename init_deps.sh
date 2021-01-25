@@ -11,14 +11,17 @@ JQUERY_VERSION="3.5.1"
 STATIC_DIR="static/3rdparty"
 
 pre_init() {
-    rm -rf "${STATIC_DIR}/*"
+    rm -rf "${STATIC_DIR:?}/*"
 }
 
 init_bootstrap() {
     "${WGET}" -q "https://github.com/twbs/bootstrap/releases/download/v${BOOTSTRAP_VERSION}/bootstrap-${BOOTSTRAP_VERSION}-dist.zip" -O "${BOOTSTRAP_OUT}"
     unzip -o -d "${STATIC_DIR}" "${BOOTSTRAP_OUT}" \
         bootstrap-${BOOTSTRAP_VERSION}-dist/css/bootstrap.min.css \
-        bootstrap-${BOOTSTRAP_VERSION}-dist/css/bootstrap.min.css.map
+        bootstrap-${BOOTSTRAP_VERSION}-dist/css/bootstrap.min.css.map \
+        bootstrap-${BOOTSTRAP_VERSION}-dist/js/bootstrap.min.js \
+        bootstrap-${BOOTSTRAP_VERSION}-dist/js/bootstrap.min.js.map
+
 }
 
 init_leaflet() {
