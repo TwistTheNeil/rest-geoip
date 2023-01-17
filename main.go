@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"rest-geoip/internal/maxmind"
 	"rest-geoip/internal/router"
 
@@ -17,14 +18,13 @@ func main() {
 	viper.AutomaticEnv()
 
 	// signals.Trap()
-	// err := maxmind.GetInstance().Open()
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	fmt.Println("Warning: Maxmind database not opened during initialization. Try updating to see if this warning goes away")
-	// }
-
-	maxmind.
+	err := maxmind.
 		GetInstance().
 		Open()
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("Warning: Maxmind database not opened during initialization. Try updating to see if this warning goes away")
+	}
+
 	router.InitRouter()
 }
