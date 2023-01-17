@@ -3,3 +3,4 @@ GeoLite2*
 db.mmdb
 .env
 static/3rdparty
+.vscode
