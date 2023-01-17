@@ -3,7 +3,7 @@ package random
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"rest-geoip/lib/customerrors"
+	"fmt"
 )
 
 // GenerateKey generates a crypto secure key
@@ -17,10 +17,10 @@ func GenerateKey(bits int) (string, error) {
 	var pw = make([]byte, bytes)
 	n, err := rand.Read(pw)
 	if err != nil {
-		return "", customerrors.ErrGeneratePassword
+		return "", fmt.Errorf("%w", err)
 	}
 	if n != bytes {
-		return "", customerrors.ErrGeneratePassword
+		return "", fmt.Errorf("%w", fmt.Errorf("who knows"))
 	}
 	return base64.RawURLEncoding.EncodeToString(pw), nil
 }

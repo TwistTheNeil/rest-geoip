@@ -3,7 +3,6 @@ package maxmind
 import (
 	"fmt"
 	"net"
-	"rest-geoip/lib/customerrors"
 	"sync"
 
 	"github.com/oschwald/maxminddb-golang"
@@ -52,7 +51,7 @@ func (m *DB) Open() error {
 
 	m.db, err = maxminddb.Open(dbLocation)
 	if err != nil {
-		return customerrors.ErrMMDBNotFound
+		return fmt.Errorf("%w", err)
 	}
 	return nil
 }
