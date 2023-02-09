@@ -6,7 +6,7 @@ require (
 	github.com/codegangsta/negroni v1.0.0 // indirect
 	github.com/didip/tollbooth v4.0.2+incompatible
 	github.com/didip/tollbooth_gin v0.0.0-20170928041415-5752492be505
-	github.com/gin-gonic/gin v1.7.0
+	github.com/gin-gonic/gin v1.7.7
 	github.com/golang/protobuf v1.3.4 // indirect
 	github.com/markbates/pkger v0.16.0
 	github.com/oschwald/maxminddb-golang v1.6.0
