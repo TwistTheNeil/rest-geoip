@@ -5,7 +5,7 @@ set -e
 WGET=$(which wget)
 BOOTSTRAP_VERSION="5.0.0-beta1"
 BOOTSTRAP_OUT="bootstrap.zip"
-LEAFLET_VERSION="1.6.0"
+LEAFLET_VERSION="1.8.0"
 LEAFLET_OUT="leaflet.zip"
 JQUERY_VERSION="3.5.1"
 STATIC_DIR="static/3rdparty"
@@ -25,7 +25,7 @@ init_bootstrap() {
 }
 
 init_leaflet() {
-    "${WGET}" -q "http://cdn.leafletjs.com/leaflet/v${LEAFLET_VERSION}/leaflet.zip" -O "${LEAFLET_OUT}"
+    "${WGET}" -q "https://leafletjs-cdn.s3.amazonaws.com/content/leaflet/v${LEAFLET_VERSION}/leaflet.zip" -O "${LEAFLET_OUT}"
     mkdir -p "${STATIC_DIR}/leaflet-v${LEAFLET_VERSION}"
     unzip -o -d "${STATIC_DIR}/leaflet-v${LEAFLET_VERSION}" "${LEAFLET_OUT}"
 }
