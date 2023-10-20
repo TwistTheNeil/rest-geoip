@@ -133,7 +133,6 @@ func InitRouter() {
 		ua := c.Request().UserAgent()
 		uaName := strings.Split(ua, "/")
 
-		fmt.Println(uaName[0])
 		_, isKnownCliUserAgent := cliUserAgents[uaName[0]]
 
 		if isKnownCliUserAgent {

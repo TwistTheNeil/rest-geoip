@@ -5,6 +5,7 @@ import (
 	"os"
 	"rest-geoip/internal/maxmind"
 	"rest-geoip/internal/router"
+	"rest-geoip/internal/signals"
 
 	"github.com/spf13/viper"
 )
@@ -18,7 +19,7 @@ func main() {
 	viper.SetDefault("LISTEN_PORT", "1323")
 	viper.AutomaticEnv()
 
-	// signals.Trap()
+	signals.Trap()
 	err := maxmind.
 		GetInstance().
 		Open()
