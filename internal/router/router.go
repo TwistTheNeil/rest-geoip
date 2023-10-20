@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"rest-geoip/internal/maxmind"
+	"strings"
 	"sync"
 	"text/template"
 
@@ -108,6 +109,11 @@ func geoipForAddress(c echo.Context) error {
 }
 
 func InitRouter() {
+	cliUserAgents := map[string]struct{}{
+		"HTTPie": {},
+		"curl":   {},
+	}
+
 	once.Do(func() {
 		e = echo.New()
 	})
@@ -123,6 +129,18 @@ func InitRouter() {
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
 
+	e.GET("/", func(c echo.Context) error {
+		ua := c.Request().UserAgent()
+		uaName := strings.Split(ua, "/")
+
+		fmt.Println(uaName[0])
+		_, isKnownCliUserAgent := cliUserAgents[uaName[0]]
+
+		if isKnownCliUserAgent {
+			c.String(http.StatusOK, c.RealIP())
+		}
+		return nil
+	})
 	api := e.Group("/api")
 	api.GET("/ip", ip)
 	api.GET("/geoip", geoip)

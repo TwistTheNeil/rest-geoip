@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"rest-geoip/internal/maxmind"
 	"rest-geoip/internal/router"
 
@@ -23,7 +24,8 @@ func main() {
 		Open()
 	if err != nil {
 		fmt.Println(err)
-		fmt.Println("Warning: Maxmind database not opened during initialization. Try updating to see if this warning goes away")
+		fmt.Println("Error: Maxmind database not opened during initialization. Please check that it exists.")
+		os.Exit(1)
 	}
 
 	router.InitRouter()
