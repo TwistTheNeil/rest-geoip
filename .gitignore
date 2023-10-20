@@ -4,3 +4,4 @@ db.mmdb
 .env
 static/3rdparty
 .vscode
+main
