@@ -5,3 +5,5 @@ db.mmdb
 static/3rdparty
 .vscode
 main
+frontend/dist
+internal/router/dist
