@@ -1,98 +1,49 @@
 package router
 
 import (
+	"embed"
 	"fmt"
-	"io"
 	"net"
 	"net/http"
 	"rest-geoip/internal/maxmind"
 	"strings"
 	"sync"
-	"text/template"
 
-	"github.com/didip/tollbooth/v7"
-	"github.com/didip/tollbooth_echo"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
-	"gopkg.in/unrolled/secure.v1"
 )
 
 var e *echo.Echo
 var once sync.Once
 
-type Template struct {
-	templates *template.Template
-}
+//go:embed all:dist
+var spaFS embed.FS
 
-func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	return t.templates.ExecuteTemplate(w, name, data)
-}
-
-func initSecurityHeaders() {
-	secureMiddleware := secure.New(secure.Options{
-		STSSeconds:              31536000,
-		STSIncludeSubdomains:    true,
-		STSPreload:              false,
-		ForceSTSHeader:          true,
-		ContentTypeNosniff:      true,
-		BrowserXssFilter:        true,
-		ReferrerPolicy:          "same-origin",
-		FeaturePolicy:           "vibrate 'none';",
-		CustomFrameOptionsValue: "SAMEORIGIN",
-		FrameDeny:               true,
-		ContentSecurityPolicy:   "default-src 'self' https://api.mapbox.com 'unsafe-inline'; img-src 'self' https://api.mapbox.com data:",
-	})
-
-	e.Use(echo.WrapMiddleware(secureMiddleware.Handler))
-}
-
-func initRateLimiting() {
-	// TODO
-	// limiter := tollbooth.NewLimiter(1, &limiter.ExpirableOptions{DefaultExpirationTTL: time.Hour})
-	limiter := tollbooth.NewLimiter(1, nil)
-	e.Use(tollbooth_echo.LimitHandler(limiter))
-}
-
-// func initFrontend() {
-// 	if !viper.GetBool("WEB") {
-// 		return
-// 	}
+//func initSecurityHeaders() {
+//	secureMiddleware := secure.New(secure.Options{
+//		STSSeconds:              31536000,
+//		STSIncludeSubdomains:    true,
+//		STSPreload:              false,
+//		ForceSTSHeader:          true,
+//		ContentTypeNosniff:      true,
+//		BrowserXssFilter:        true,
+//		ReferrerPolicy:          "same-origin",
+//		FeaturePolicy:           "vibrate 'none';",
+//		CustomFrameOptionsValue: "SAMEORIGIN",
+//		FrameDeny:               true,
+//		ContentSecurityPolicy:   "default-src 'self' https://api.mapbox.com 'unsafe-inline'; img-src 'self' https://api.mapbox.com data:",
+//	})
 //
-// 	initSecurityHeaders()
+//	e.Use(echo.WrapMiddleware(secureMiddleware.Handler))
+//}
 //
-// 	pkger.Include("/templates")
-// 	// Load HTML templates
-// 	parsedTemplates, err := templating.ParseTemplates("/templates")
-// 	if err != nil {
-// 		panic(err)
-// 	}
-//
-// 	t := &Template{
-// 		templates: parsedTemplates,
-// 	}
-//
-// 	e.Renderer = t
-//
-// 	frontend := e.Group("/")
-// 	// frontend.GET("/", routes.DisplayGeoIPInfo)
-// 	// frontend.GET("/:address", routes.DisplayGeoIPInfo)
-// 	// frontend.POST("/", routes.SearchIPAddressInfo)
-//
-// 	// https://echo.labstack.com/middleware/static/
-// 	// Serve static files via pkger's fs
-// 	e.Use(middleware.Static(pkger.Dir("/static")))
-// }
-
-func ip(c echo.Context) error {
-	type dto struct {
-		IPAddress string `json:"ip_address"`
-	}
-
-	return c.JSON(http.StatusOK, dto{
-		IPAddress: c.RealIP(),
-	})
-}
+//func initRateLimiting() {
+//	// TODO
+//	// limiter := tollbooth.NewLimiter(1, &limiter.ExpirableOptions{DefaultExpirationTTL: time.Hour})
+//	limiter := tollbooth.NewLimiter(1, nil)
+//	e.Use(tollbooth_echo.LimitHandler(limiter))
+//}
 
 func geoip(c echo.Context) error {
 	db := maxmind.GetInstance()
@@ -108,12 +59,34 @@ func geoipForAddress(c echo.Context) error {
 	return c.JSON(http.StatusOK, r)
 }
 
-func InitRouter() {
-	cliUserAgents := map[string]struct{}{
-		"HTTPie": {},
-		"curl":   {},
-	}
+func cliAgentHander(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// If the request comes from curl or httpie, just send them back
+		// a string with the ip in it.
+		// Otherwise, show them the SPA frontend (handled by a separate
+		// middleware)
+		if c.Request().URL.String() != "/" {
+			return next(c)
+		}
+		cliUserAgents := map[string]struct{}{
+			"HTTPie": {},
+			"curl":   {},
+		}
 
+		ua := c.Request().UserAgent()
+		uaName := strings.Split(ua, "/")
+
+		_, isKnownCliUserAgent := cliUserAgents[uaName[0]]
+
+		if isKnownCliUserAgent {
+			return c.String(http.StatusOK, c.RealIP())
+		}
+
+		return next(c)
+	}
+}
+
+func InitRouter() {
 	once.Do(func() {
 		e = echo.New()
 	})
@@ -123,30 +96,27 @@ func InitRouter() {
 	if viper.GetBool("LOGGING") {
 		e.Use(middleware.Logger())
 	}
+	e.Use(middleware.Gzip())
+	e.Use(cliAgentHander)
 
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{viper.GetString("ALLOW_CORS_URL")},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-	}))
-
-	e.GET("/", func(c echo.Context) error {
-		ua := c.Request().UserAgent()
-		uaName := strings.Split(ua, "/")
-
-		_, isKnownCliUserAgent := cliUserAgents[uaName[0]]
-
-		if isKnownCliUserAgent {
-			c.String(http.StatusOK, c.RealIP())
-		}
-		return nil
-	})
 	api := e.Group("/api")
-	api.GET("/ip", ip)
 	api.GET("/geoip", geoip)
 	api.GET("/geoip/:ip_address", geoipForAddress)
 	// api.PUT("/update", validateAuth, updateDB)
 
-	// initFrontend()
+	// SPA frontend handler
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Root:       "dist",       // This is the path to your SPA build folder, the folder that is created from running "npm build"
+		Index:      "index.html", // This is the default html page for your SPA
+		Browse:     false,
+		HTML5:      true,
+		Filesystem: http.FS(spaFS),
+	}))
+
+	// We don't serve anything else, redirect to /
+	e.Any("/*", func(c echo.Context) error {
+		return c.Redirect(http.StatusPermanentRedirect, "/")
+	})
 
 	e.Logger.Fatal(e.Start(listeningAddress))
 }
