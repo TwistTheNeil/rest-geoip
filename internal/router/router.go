@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"os"
 	"rest-geoip/internal/maxmind"
 	"strings"
 	"sync"
@@ -99,19 +100,28 @@ func InitRouter() {
 	e.Use(middleware.Gzip())
 	e.Use(cliAgentHander)
 
+	if viper.GetBool("RELEASE_MODE") {
+		// SPA frontend handler
+		e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+			Root:       "dist",       // This is the path to your SPA build folder, the folder that is created from running "npm build"
+			Index:      "index.html", // This is the default html page for your SPA
+			Browse:     false,
+			HTML5:      true,
+			Filesystem: http.FS(spaFS),
+		}))
+	} else {
+		// Development mode - static fs handler
+		e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+			Browse:     false,
+			HTML5:      true,
+			Filesystem: http.FS(os.DirFS("./internal/router/dist/")),
+		}))
+	}
+
 	api := e.Group("/api")
 	api.GET("/geoip", geoip)
 	api.GET("/geoip/:ip_address", geoipForAddress)
 	// api.PUT("/update", validateAuth, updateDB)
-
-	// SPA frontend handler
-	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root:       "dist",       // This is the path to your SPA build folder, the folder that is created from running "npm build"
-		Index:      "index.html", // This is the default html page for your SPA
-		Browse:     false,
-		HTML5:      true,
-		Filesystem: http.FS(spaFS),
-	}))
 
 	// We don't serve anything else, redirect to /
 	e.Any("/*", func(c echo.Context) error {

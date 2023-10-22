@@ -17,6 +17,7 @@ func main() {
 	viper.SetDefault("WEB", true)
 	viper.SetDefault("LISTEN_ADDRESS", "0.0.0.0")
 	viper.SetDefault("LISTEN_PORT", "1323")
+	viper.SetDefault("RELEASE_MODE", "true")
 	viper.AutomaticEnv()
 
 	signals.Trap()
