@@ -1,15 +1,20 @@
+# Build spa
+FROM node:18.18.2-alpine3.18 AS spa-builder
+WORKDIR /app
+COPY frontend /app
+RUN npm install
+RUN npx vite build --outDir /app/dist
+
 # Build app
-FROM golang:1.14.3-alpine3.11 AS builder
-RUN apk add --no-cache upx=~3.95-r2
+FROM golang:1.21.3-alpine3.17 AS builder
 WORKDIR /app
 COPY . .
-RUN sh init_deps.sh
-RUN go get github.com/markbates/pkger/cmd/pkger && $GOPATH/bin/pkger
-RUN go get github.com/securego/gosec/cmd/gosec && $GOPATH/bin/gosec ./...
-RUN go build -v -ldflags="-s -w" && upx rest-geoip
+COPY --from=spa-builder /app/dist /app/internal/router/dist
+RUN ls /app/internal/router/dist/
+RUN go build -v 
 
 # Main docker image
-FROM alpine:3.11.6
+FROM alpine:3.18.4
 COPY --from=builder /app/rest-geoip /usr/bin/
-ENV GIN_MODE=release
+ENV RELEASE_MODE=true
 CMD ["/usr/bin/rest-geoip"]

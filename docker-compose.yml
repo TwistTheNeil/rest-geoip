@@ -5,7 +5,7 @@ services:
     build:
       context: .
     ports:
-      - 8080:8080
+      - 1323:1323
     volumes:
       - ./db:/opt/
     environment:
@@ -17,5 +17,5 @@ services:
       - WEB=${WEB}
       - LISTEN_ADDRESS=${LISTEN_ADDRESS}
       - LISTEN_PORT=${LISTEN_PORT}
-      - MAPBOX_ACCESS_TOKEN=${MAPBOX_ACCESS_TOKEN}
+      - MAPTILER_TOKEN=${MAPTILER_TOKEN}
       - GIN_MODE=${GIN_MODE}
