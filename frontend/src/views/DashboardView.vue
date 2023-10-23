@@ -48,6 +48,7 @@
   import { onMounted, ref, computed } from 'vue';
   import type { Ref } from 'vue';
   import { useRoute } from 'vue-router';
+  import { isIP } from 'is-ip';
 
   import NavBar from '@/components/NavBar.vue';
   import { useFetch_GetMaxmindData } from '@/composables/useFetch';
@@ -90,10 +91,13 @@
   };
 
   const fetchIPAddressDetails = async (ipAddress: string) => {
+    if (!isIP(ipAddress)) {
+      return;
+    }
+
     data.value = null;
     error.value = null;
 
-    // TODO: check for valid ip address
     const { data: lata, error: lrror } = await useFetch_GetMaxmindData(`/api/geoip/${ipAddress}`);
 
     data.value = lata.value;
