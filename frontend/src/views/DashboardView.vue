@@ -33,21 +33,9 @@
                   </tbody>
                 </table>
               </div>
-              <!--
-              {{if .mapbox_access_token}}
               <div class="col-lg-6">
-                <div id="mapid" style="height: 500px"></div>
+                <ApproximateMap :longitude="data?.Location.Longitude" :latitude="data?.Location.Latitude" />
               </div>
-              {{else}}
-              <div class="col-lg-6">
-                <div>
-                  <p>
-                    Map feature is not enabled
-                  </p>
-                </div>
-              </div>
-              {{end}}
-              -->
             </div>
           </div>
         </div>
@@ -64,6 +52,7 @@
   import { useFetch_GetMaxmindData } from '@/composables/useFetch';
   import SearchBar from '@/components/SearchBar.vue';
   import type { MaxmindBackendResponse } from '@/types/MaxmindBackend';
+  import ApproximateMap from '@/components/ApproximateMap.vue';
 
   const data:Ref<MaxmindBackendResponse | null> = ref(null);
   const error:Ref<string | null> = ref(null);

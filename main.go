@@ -18,6 +18,7 @@ func main() {
 	viper.SetDefault("LISTEN_ADDRESS", "0.0.0.0")
 	viper.SetDefault("LISTEN_PORT", "1323")
 	viper.SetDefault("RELEASE_MODE", "true")
+	viper.SetDefault("MAPTILER_TOKEN", "token")
 	viper.AutomaticEnv()
 
 	signals.Trap()

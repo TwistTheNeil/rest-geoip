@@ -119,6 +119,15 @@ func InitRouter() {
 	}
 
 	api := e.Group("/api")
+	// TODO: protect https://documentation.maptiler.com/hc/en-us/articles/360020806037-Protect-your-map-key
+	api.GET("/maptiler/token", func(c echo.Context) error {
+		var dto struct {
+			MaptilerToken string
+		}
+
+		dto.MaptilerToken = viper.GetString("MAPTILER_TOKEN")
+		return c.JSON(http.StatusOK, dto)
+	})
 	api.GET("/geoip", geoip)
 	api.GET("/geoip/:ip_address", geoipForAddress)
 	// api.PUT("/update", validateAuth, updateDB)
