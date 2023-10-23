@@ -1,5 +1,6 @@
 <template>
-  <div id='map' style='height: 100%'></div>
+  <!-- TODO: figure out why height: 100% doesn't work on mobile -->
+  <div id='map' style='height: 500px'></div>
 </template>
 
 <script setup lang='ts'>
