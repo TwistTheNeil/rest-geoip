@@ -47,6 +47,7 @@
 <script setup lang='ts'>
   import { onMounted, ref, computed } from 'vue';
   import type { Ref } from 'vue';
+  import { useRoute } from 'vue-router';
 
   import NavBar from '@/components/NavBar.vue';
   import { useFetch_GetMaxmindData } from '@/composables/useFetch';
@@ -54,6 +55,7 @@
   import type { MaxmindBackendResponse } from '@/types/MaxmindBackend';
   import ApproximateMap from '@/components/ApproximateMap.vue';
 
+  const route = useRoute();
   const data:Ref<MaxmindBackendResponse | null> = ref(null);
   const error:Ref<string | null> = ref(null);
 
@@ -106,7 +108,11 @@
   };
 
   onMounted(() => {
-    fetchCurrentIPAddressDetails();
+    if (!route.query.address || route.query.address === "") {
+      fetchCurrentIPAddressDetails();
+    } else {
+      fetchIPAddressDetails(route.query.address as string);
+    }
   });
 
 </script>
