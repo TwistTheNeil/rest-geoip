@@ -6,7 +6,7 @@
         <SearchBar :currentIPAddress="data!.IP" @query-request="fetchIPAddressDetails" />
         <div class="card">
           <div class="card-header">
-            {{ data!.IP }}
+            Details for IP Address: {{ data!.IP }}
           </div>
           <div class="card-body">
             <div class="row">
