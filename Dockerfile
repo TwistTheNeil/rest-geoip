@@ -8,9 +8,11 @@ RUN npx vite build --outDir /app/dist
 # Build app
 FROM golang:1.21.3-alpine3.17 AS builder
 WORKDIR /app
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
 COPY . .
 COPY --from=spa-builder /app/dist /app/internal/router/dist
-RUN ls /app/internal/router/dist/
 RUN go build -v 
 
 # Main docker image
