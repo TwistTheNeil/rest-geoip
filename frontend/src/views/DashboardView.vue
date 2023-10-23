@@ -34,7 +34,7 @@
                 </table>
               </div>
               <div class="col-lg-6">
-                <ApproximateMap :longitude="data?.Location.Longitude" :latitude="data?.Location.Latitude" />
+                <ApproximateMap :longitude="data!.Location.Longitude" :latitude="data!.Location.Latitude" />
               </div>
             </div>
           </div>
