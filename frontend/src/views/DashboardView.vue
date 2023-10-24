@@ -120,6 +120,11 @@
 
     progressValue.value = '0';
 
+    if (ipAddress === data.value!.IP) {
+      progressValue.value = '100';
+      return;
+    }
+
     data.value = null;
     error.value = null;
 
