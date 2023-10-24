@@ -2,7 +2,7 @@ name: go-build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, 'chores/rewrite' ]
   pull_request:
     branches: [ main ]
 
