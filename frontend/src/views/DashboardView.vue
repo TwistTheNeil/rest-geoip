@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div class="progress" style="height: 3px;">
-      <div class="progress-bar" role="progressbar" :style="progressValueWidth" :aria-valuenow="progressValue" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
+    <OverviewProgressbar />
     <NavBar />
 
     <div class="container justify-content-center align-items-center">
@@ -49,7 +47,7 @@
 </template>
 
 <script setup lang='ts'>
-  import { onMounted, ref, computed, watch } from 'vue';
+  import { onMounted, ref, computed } from 'vue';
   import type { Ref } from 'vue';
   import { useRoute } from 'vue-router';
   import { isIP } from 'is-ip';
@@ -59,24 +57,17 @@
   import SearchBar from '@/components/SearchBar.vue';
   import type { MaxmindBackendResponse } from '@/types/MaxmindBackend';
   import ApproximateMap from '@/components/ApproximateMap.vue';
+  import OverviewProgressbar from '@/components/OverviewProgressbar.vue';
+  import { useOverviewProgressbarStore } from '@/stores/overviewProgressbarState';
 
   const route = useRoute();
+  const overviewProgressbarStore = useOverviewProgressbarStore();
   const data: Ref<MaxmindBackendResponse | null> = ref(null);
   const error: Ref<string | null> = ref(null);
   const progressValue: Ref<string> = ref("0");
 
   const isReady = computed(() => {
     return data.value !== null;
-  });
-
-  const progressValueWidth = computed(() => {
-    return `width: ${progressValue.value}%;`
-  });
-
-  watch(progressValue, async (newProgressValue) => {
-    if (newProgressValue === '100') {
-      setTimeout(() => progressValue.value = '0', 1000);
-    }
   });
 
   const cityNames = computed(() => {
@@ -93,10 +84,10 @@
   });
 
   const fetchCurrentIPAddressDetails = async () => {
-    progressValue.value = '0';
+    overviewProgressbarStore.update(0);
     const { data: lata, error: lrror } = await useFetch_GetMaxmindData('/api/geoip');
 
-    progressValue.value = '60';
+    overviewProgressbarStore.update(60);
 
     if (lrror.value) {
       console.log(lrror.value);
@@ -105,12 +96,12 @@
       console.log(lata.value);
     }
 
-    progressValue.value = '80';
+    overviewProgressbarStore.update(80);
 
     data.value = lata.value;
     error.value = lrror.value;
 
-    progressValue.value = '100';
+    overviewProgressbarStore.update(100);
   };
 
   const fetchIPAddressDetails = async (ipAddress: string) => {
@@ -118,10 +109,10 @@
       return;
     }
 
-    progressValue.value = '0';
+    overviewProgressbarStore.update(0);
 
     if (ipAddress === data.value!.IP) {
-      progressValue.value = '100';
+      overviewProgressbarStore.update(100);
       return;
     }
 
@@ -130,7 +121,7 @@
 
     const { data: lata, error: lrror } = await useFetch_GetMaxmindData(`/api/geoip/${ipAddress}`);
 
-    progressValue.value = '60';
+    overviewProgressbarStore.update(60);
 
     if (lrror.value) {
       console.log(lrror.value);
@@ -139,14 +130,13 @@
       console.log(lata.value);
     }
 
-    progressValue.value = '80';
+    overviewProgressbarStore.update(80);
     console.log(progressValue.value);
 
     data.value = lata.value;
     error.value = lrror.value;
 
-    progressValue.value = '100';
-    console.log(progressValue.value);
+    overviewProgressbarStore.update(100);
   };
 
   onMounted(() => {
