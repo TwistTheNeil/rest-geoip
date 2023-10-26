@@ -5,6 +5,7 @@
 
 <script setup lang='ts'>
   import { onMounted } from 'vue';
+  import maplibregl from 'maplibre-gl';
 
   import { useMaptilerToken } from '@/composables/useMaptilerToken';
 
@@ -15,7 +16,7 @@
 
   onMounted(async () => {
     const maptilerToken = await useMaptilerToken();
-    const center = [props.longitude, props.latitude];
+    const center = { lng: props.longitude, lat: props.latitude};
 
     const map = new maplibregl.Map({
       container: 'map',
@@ -24,7 +25,7 @@
       zoom: 10,
     });
 
-    const marker = new maplibregl.Marker()
+    new maplibregl.Marker()
       .setLngLat(center)
       .addTo(map);
   });
