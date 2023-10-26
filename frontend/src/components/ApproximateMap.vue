@@ -30,3 +30,7 @@
       .addTo(map);
   });
 </script>
+
+<style>
+  @import '@/../node_modules/maplibre-gl/dist/maplibre-gl.css';
+</style>
