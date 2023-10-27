@@ -47,12 +47,10 @@
   import { useRoute } from 'vue-router';
   import { isIP } from 'is-ip';
 
-  import NavBar from '@/components/NavBar.vue';
   import { useFetch_GetMaxmindData } from '@/composables/useFetch';
   import SearchBar from '@/components/SearchBar.vue';
   import type { MaxmindBackendResponse } from '@/types/MaxmindBackend';
   import ApproximateMap from '@/components/ApproximateMap.vue';
-  import OverviewProgressbar from '@/components/OverviewProgressbar.vue';
   import { useOverviewProgressbarStore } from '@/stores/overviewProgressbarState';
 
   const route = useRoute();
