@@ -5,6 +5,8 @@
 [![Docker build Status](https://github.com/TwistTheNeil/rest-geoip/workflows/Docker%20Image%20CI/badge.svg)](https://github.com/TwistTheNeil/rest-geoip/actions?query=workflow%3A%22Docker+Image+CI%22)
 [![Build Report](https://github.com/TwistTheNeil/rest-geoip/workflows/go-build/badge.svg)](https://github.com/TwistTheNeil/rest-geoip/actions?query=workflow%3Ago-build)
 
+** For v0.4.1, the previous stable, look in the appropriate branch **
+
 A self hosted geoip lookup application written in Go and Vue.js 3 which provides a client with information about their IP address or any other. It uses the [Maxmind](https://www.maxmind.com) GeoLite2-City database.
 
 The webapp provides general geoip information. There is also an api available
