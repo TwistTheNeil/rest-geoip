@@ -20,17 +20,16 @@
   import type { Ref } from 'vue';
 
   import SearchIcon from '@/components/icons/SearchIcon.vue';
-
-  const props = defineProps({
-    currentIPAddress: {
-      type: String,
-      required: true,
-    },
-  });
+  import { useMaxmindDataStore } from '@/stores/maxmindDataStore';
+  import { storeToRefs } from 'pinia';
 
   const emit = defineEmits([
     'queryRequest',
   ]);
 
-  const queryString: Ref<string> = ref(props.currentIPAddress);
+  const maxmindStore = useMaxmindDataStore();
+
+  const { data } = storeToRefs(maxmindStore);
+
+  const queryString: Ref<string | null> = ref(data?.value?.IP || '');
 </script>

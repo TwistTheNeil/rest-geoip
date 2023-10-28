@@ -1,7 +1,6 @@
 <template>
   <div>
     <div v-if="isReady">
-      <SearchBar :currentIPAddress="data!.IP" @query-request="fetchIPAddressDetails" />
       <div class="card">
         <div class="card-header">
           Details for IP Address: {{ data!.IP }}
@@ -42,22 +41,16 @@
 </template>
 
 <script setup lang='ts'>
-  import { onMounted, ref, computed } from 'vue';
+  import { computed } from 'vue';
   import type { Ref } from 'vue';
-  import { useRoute } from 'vue-router';
-  import { isIP } from 'is-ip';
 
-  import { useFetch_GetMaxmindData } from '@/composables/useFetch';
-  import SearchBar from '@/components/SearchBar.vue';
-  import type { MaxmindBackendResponse } from '@/types/MaxmindBackend';
   import ApproximateMap from '@/components/ApproximateMap.vue';
-  import { useOverviewProgressbarStore } from '@/stores/overviewProgressbarState';
+  import { useMaxmindDataStore } from '@/stores/maxmindDataStore';
+  import type { MaxmindBackendResponse } from '@/types/MaxmindBackend';
+  import { storeToRefs } from 'pinia';
 
-  const route = useRoute();
-  const overviewProgressbarStore = useOverviewProgressbarStore();
-  const data: Ref<MaxmindBackendResponse | null> = ref(null);
-  const error: Ref<string | null> = ref(null);
-  const progressValue: Ref<string> = ref("0");
+  const maxmindDataStore = useMaxmindDataStore();
+  const { data }: { data: Ref<MaxmindBackendResponse | null> } = storeToRefs(maxmindDataStore);
 
   const isReady = computed(() => {
     return data.value !== null;
@@ -75,69 +68,4 @@
     const names: Array<string> = Object.keys(data!.value.City.Names).map((e) => `${e}:${data!.value!.City.Names[e]}`);
     return names;
   });
-
-  const fetchCurrentIPAddressDetails = async () => {
-    overviewProgressbarStore.update(0);
-    const { data: lata, error: lrror } = await useFetch_GetMaxmindData('/api/geoip');
-
-    overviewProgressbarStore.update(60);
-
-    if (lrror.value) {
-      console.log(lrror.value);
-      return;
-    } else {
-      console.log(lata.value);
-    }
-
-    overviewProgressbarStore.update(80);
-
-    data.value = lata.value;
-    error.value = lrror.value;
-
-    overviewProgressbarStore.update(100);
-  };
-
-  const fetchIPAddressDetails = async (ipAddress: string) => {
-    if (!isIP(ipAddress)) {
-      return;
-    }
-
-    overviewProgressbarStore.update(0);
-
-    if (ipAddress === data.value!.IP) {
-      overviewProgressbarStore.update(100);
-      return;
-    }
-
-    data.value = null;
-    error.value = null;
-
-    const { data: lata, error: lrror } = await useFetch_GetMaxmindData(`/api/geoip/${ipAddress}`);
-
-    overviewProgressbarStore.update(60);
-
-    if (lrror.value) {
-      console.log(lrror.value);
-      return;
-    } else {
-      console.log(lata.value);
-    }
-
-    overviewProgressbarStore.update(80);
-    console.log(progressValue.value);
-
-    data.value = lata.value;
-    error.value = lrror.value;
-
-    overviewProgressbarStore.update(100);
-  };
-
-  onMounted(() => {
-    if (!route.query.address || route.query.address === "") {
-      fetchCurrentIPAddressDetails();
-    } else {
-      fetchIPAddressDetails(route.query.address as string);
-    }
-  });
-
 </script>

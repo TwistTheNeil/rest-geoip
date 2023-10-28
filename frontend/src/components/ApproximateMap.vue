@@ -4,31 +4,36 @@
 </template>
 
 <script setup lang='ts'>
-  import { onMounted } from 'vue';
+  import { onMounted, onUpdated, computed } from 'vue';
   import maplibregl from 'maplibre-gl';
+  import { storeToRefs } from 'pinia';
 
   import { useMaptilerToken } from '@/composables/useMaptilerToken';
+  import { useMaxmindDataStore } from '@/stores/maxmindDataStore';
 
-  const props = defineProps<{
-    longitude: number,
-    latitude: number,
-  }>();
+  const maxmindDataStore = useMaxmindDataStore();
+  const { data } = storeToRefs(maxmindDataStore);
 
-  onMounted(async () => {
+  const center = computed(() => ({ lng: data.value!.Location.Longitude, lat: data.value!.Location.Latitude }));
+
+  const updateMap = async () => {
+    // TODO: move this out? i don't like it being called on every update
+    // currently error if we move it out of `onMounted` specifically
     const maptilerToken = await useMaptilerToken();
-    const center = { lng: props.longitude, lat: props.latitude};
-
     const map = new maplibregl.Map({
       container: 'map',
       style: `https://api.maptiler.com/maps/streets/style.json?key=${maptilerToken}`,
-      center,
+      center: center.value,
       zoom: 10,
     });
 
     new maplibregl.Marker()
-      .setLngLat(center)
+      .setLngLat(center.value)
       .addTo(map);
-  });
+  };
+
+  onMounted(() => updateMap());
+  onUpdated(() => updateMap());
 </script>
 
 <style>
