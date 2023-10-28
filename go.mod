@@ -3,14 +3,14 @@ module rest-geoip
 go 1.21
 
 require (
+	github.com/didip/tollbooth/v7 v7.0.1
+	github.com/didip/tollbooth_echo v0.0.0-20220826213528-8e558c99076d
 	github.com/labstack/echo/v4 v4.11.2
 	github.com/oschwald/maxminddb-golang v1.6.0
 	github.com/spf13/viper v1.17.0
 )
 
 require (
-	github.com/didip/tollbooth/v7 v7.0.1 // indirect
-	github.com/didip/tollbooth_echo v0.0.0-20220826213528-8e558c99076d // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-pkgz/expirable-cache v1.0.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
