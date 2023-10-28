@@ -1,11 +1,9 @@
 # rest-geoip
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/TwistTheNeil/rest-geoip)](https://goreportcard.com/report/github.com/TwistTheNeil/rest-geoip)
-[![Golangci-lint Status](https://github.com/TwistTheNeil/rest-geoip/workflows/golangci-lint/badge.svg)](https://github.com/TwistTheNeil/rest-geoip/actions?query=workflow%3Agolangci-lint)
-[![Docker build Status](https://github.com/TwistTheNeil/rest-geoip/workflows/Docker%20Image%20CI/badge.svg)](https://github.com/TwistTheNeil/rest-geoip/actions?query=workflow%3A%22Docker+Image+CI%22)
-[![Build Report](https://github.com/TwistTheNeil/rest-geoip/workflows/go-build/badge.svg)](https://github.com/TwistTheNeil/rest-geoip/actions?query=workflow%3Ago-build)
+[![Docker Image CI (branch:main)](https://github.com/TwistTheNeil/rest-geoip/actions/workflows/docker-image.yml/badge.svg)](https://github.com/TwistTheNeil/rest-geoip/actions/workflows/docker-image.yml)
 
-** For v0.4.1, the previous stable, look in the appropriate branch **
+** For v0.4.1, or any current or previous stable versions, look in the appropriate tag's branch. `main` will be in continuous development **
 
 A self hosted geoip lookup application written in Go and Vue.js 3 which provides a client with information about their IP address or any other. It uses the [Maxmind](https://www.maxmind.com) GeoLite2-City database.
 
@@ -19,6 +17,26 @@ PUT  /api/update          : Update the Maxmind database
 ```
 
 The application doesn't provide a database. A `PUT` request to `/api/update` will update the database and will ideally be protected by an api key (header: `X-API-KEY`). If `API_KEY` env var is not set, then the application will set one on startup and notify via STDOUT
+
+### Building
+
+#### via npm and go
+```bash
+$ cd frontend
+$ pnpm install
+$ npm run build
+$ cd ../
+$ go build
+```
+
+#### via docker
+
+```bash
+$ docker build .
+```
+
+The go binary will have the vue app embedded and serve it if `WEB` is enabled.
+the binary will serve the embedded app in production mode (`RELEASE_MODE` = `true`). Or it will look at the filesystem for a `dist/` and serve that if it's not in production mode
 
 ### Screenshots of optional webapp
 ![screenshot](docs/screen.png)
