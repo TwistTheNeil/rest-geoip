@@ -64,6 +64,24 @@ func (m *DB) Close() error {
 	return m.db.Close()
 }
 
+func (m *DB) Update() error {
+	err := m.Close()
+	if err != nil {
+		fmt.Println("Failed to close maxmind database")
+		return err
+	}
+	if err := DownloadAndUpdate(); err != nil {
+		fmt.Println("Failed to update maxmind database")
+		return err
+	}
+	if err := m.Open(); err != nil {
+		fmt.Println("Failed to open maxmind database")
+		return err
+	}
+
+	return nil
+}
+
 // Lookup results from a maxmind db lookup
 func (m *DB) Lookup(ip net.IP) (Record, error) {
 	var record Record

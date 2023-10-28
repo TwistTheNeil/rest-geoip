@@ -130,7 +130,36 @@ func InitRouter() {
 	})
 	api.GET("/geoip", geoip)
 	api.GET("/geoip/:ip_address", geoipForAddress)
-	// api.PUT("/update", validateAuth, updateDB)
+	api.PUT("/update", func(c echo.Context) error {
+		var dto struct {
+			Message string `json:"message"`
+		}
+		err := maxmind.GetInstance().Update()
+		if err != nil {
+			dto.Message = "error"
+			return c.JSON(http.StatusInternalServerError, dto)
+		}
+		dto.Message = "success"
+		return c.JSON(http.StatusOK, dto)
+	}, func(next echo.HandlerFunc) echo.HandlerFunc {
+		apikey := viper.GetString("API_KEY")
+		return func(c echo.Context) error {
+			type authorization struct {
+				API_KEY string `header:"x-api-key"`
+			}
+			var dto struct {
+				Message string `json:"message"`
+			}
+			request := new(authorization)
+			binder := &echo.DefaultBinder{}
+			binder.BindHeaders(c, request)
+			if apikey == request.API_KEY {
+				return next(c)
+			}
+			dto.Message = "unauthorized"
+			return c.JSON(http.StatusUnauthorized, dto)
+		}
+	})
 
 	if viper.GetBool("WEB") {
 		// We don't serve anything else, redirect to /

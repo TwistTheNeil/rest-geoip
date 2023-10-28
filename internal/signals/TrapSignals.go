@@ -19,17 +19,7 @@ func Trap() {
 			switch <-signals {
 			case syscall.SIGUSR1:
 				fmt.Println("SIGUSR1 called. Updating maxmind db")
-				if err := maxmind.GetInstance().Close(); err != nil {
-					fmt.Println("Failed to close maxmind database")
-				}
-				if err := maxmind.DownloadAndUpdate(); err != nil {
-					fmt.Println("Failed to update maxmind database")
-					continue
-				}
-				if err := maxmind.GetInstance().Open(); err != nil {
-					fmt.Println("Failed to open maxmind database")
-					continue
-				}
+				maxmind.GetInstance().Update()
 			}
 		}
 	}()
