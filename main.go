@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"rest-geoip/internal/maxmind"
+	"rest-geoip/internal/random"
 	"rest-geoip/internal/router"
 	"rest-geoip/internal/signals"
 
@@ -20,6 +21,16 @@ func main() {
 	viper.SetDefault("RELEASE_MODE", "true")
 	viper.SetDefault("MAPTILER_TOKEN", "token")
 	viper.AutomaticEnv()
+	if viper.GetString("API_KEY") == "" {
+		generatedKey, err := random.GenerateKey(512)
+		if err != nil {
+			fmt.Println("Error: no api key set and we weren't able to generate a key. Exiting")
+			os.Exit(1)
+		}
+
+		viper.SetDefault("API_KEY", generatedKey)
+		fmt.Printf("Generated API key: %s\n", viper.GetString("API_KEY"))
+	}
 
 	signals.Trap()
 	err := maxmind.
