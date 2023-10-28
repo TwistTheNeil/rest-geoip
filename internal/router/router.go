@@ -10,6 +10,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/didip/tollbooth/v7"
+	"github.com/didip/tollbooth_echo"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
@@ -37,13 +39,6 @@ var spaFS embed.FS
 //	})
 //
 //	e.Use(echo.WrapMiddleware(secureMiddleware.Handler))
-//}
-//
-//func initRateLimiting() {
-//	// TODO
-//	// limiter := tollbooth.NewLimiter(1, &limiter.ExpirableOptions{DefaultExpirationTTL: time.Hour})
-//	limiter := tollbooth.NewLimiter(1, nil)
-//	e.Use(tollbooth_echo.LimitHandler(limiter))
 //}
 
 func geoip(c echo.Context) error {
@@ -92,6 +87,9 @@ func InitRouter() {
 		e = echo.New()
 	})
 
+	// 3 req/s
+	limiter := tollbooth.NewLimiter(3, nil)
+
 	listeningAddress := fmt.Sprintf("%s:%s", viper.GetString("LISTEN_ADDRESS"), viper.GetString("LISTEN_PORT"))
 
 	if viper.GetBool("LOGGING") {
@@ -100,22 +98,24 @@ func InitRouter() {
 	e.Use(middleware.Gzip())
 	e.Use(cliAgentHander)
 
-	if viper.GetBool("RELEASE_MODE") {
-		// SPA frontend handler
-		e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-			Root:       "dist",       // This is the path to your SPA build folder, the folder that is created from running "npm build"
-			Index:      "index.html", // This is the default html page for your SPA
-			Browse:     false,
-			HTML5:      true,
-			Filesystem: http.FS(spaFS),
-		}))
-	} else {
-		// Development mode - static fs handler
-		e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-			Browse:     false,
-			HTML5:      true,
-			Filesystem: http.FS(os.DirFS("./internal/router/dist/")),
-		}))
+	if viper.GetBool("WEB") {
+		if viper.GetBool("RELEASE_MODE") {
+			// SPA frontend handler
+			e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+				Root:       "dist",       // This is the path to your SPA build folder, the folder that is created from running "npm build"
+				Index:      "index.html", // This is the default html page for your SPA
+				Browse:     false,
+				HTML5:      true,
+				Filesystem: http.FS(spaFS),
+			}))
+		} else {
+			// Development mode - static fs handler
+			e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+				Browse:     false,
+				HTML5:      true,
+				Filesystem: http.FS(os.DirFS("./internal/router/dist/")),
+			}))
+		}
 	}
 
 	api := e.Group("/api")
@@ -132,10 +132,14 @@ func InitRouter() {
 	api.GET("/geoip/:ip_address", geoipForAddress)
 	// api.PUT("/update", validateAuth, updateDB)
 
-	// We don't serve anything else, redirect to /
-	e.Any("/*", func(c echo.Context) error {
-		return c.Redirect(http.StatusPermanentRedirect, "/")
-	})
+	if viper.GetBool("WEB") {
+		// We don't serve anything else, redirect to /
+		e.Any("/*", func(c echo.Context) error {
+			return c.Redirect(http.StatusPermanentRedirect, "/")
+		})
+	}
+
+	e.Use(tollbooth_echo.LimitHandler(limiter))
 
 	e.Logger.Fatal(e.Start(listeningAddress))
 }
