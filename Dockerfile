@@ -1,8 +1,10 @@
 # Build spa
 FROM node:18.18.2-alpine3.18 AS spa-builder
 WORKDIR /app
+RUN npm install -g pnpm
 COPY frontend /app
-RUN npm install
+RUN rm -rf /app/node_modules
+RUN pnpm install --frozen-lockfile
 RUN npx vite build --outDir /app/dist
 
 # Build app
