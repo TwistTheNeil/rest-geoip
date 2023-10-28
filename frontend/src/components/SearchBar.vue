@@ -23,7 +23,7 @@
   import { useMaxmindDataStore } from '@/stores/maxmindDataStore';
   import { storeToRefs } from 'pinia';
 
-  const emit = defineEmits([
+  defineEmits([
     'queryRequest',
   ]);
 

@@ -14,7 +14,7 @@
               <tr>
                 <td> City </td>
                 <td>
-                  <span v-for="name in cityNames">
+                  <span v-for="name in cityNames" :key="name">
                     {{ name }}
                     <br />
                   </span>
