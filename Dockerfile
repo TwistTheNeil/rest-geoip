@@ -17,7 +17,7 @@ RUN go mod download
 COPY . .
 RUN rm -rf /app/internal/router/dist
 COPY --from=spa-builder /app/dist /app/internal/router/dist
-RUN go build -v 
+RUN go build -v -ldflags="-s"
 RUN upx /app/rest-geoip
 
 # Main docker image
