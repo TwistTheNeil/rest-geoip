@@ -19,7 +19,10 @@ func Trap() {
 			switch <-signals {
 			case syscall.SIGUSR1:
 				fmt.Println("SIGUSR1 called. Updating maxmind db")
-				maxmind.GetInstance().Update()
+				err := maxmind.GetInstance().Update()
+				if err != nil {
+					fmt.Println(err)
+				}
 			}
 		}
 	}()

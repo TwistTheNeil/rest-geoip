@@ -136,7 +136,8 @@ func InitRouter() {
 		}
 		err := maxmind.GetInstance().Update()
 		if err != nil {
-			dto.Message = "error"
+			fmt.Println(err)
+			dto.Message = "error updating the maxmind database"
 			return c.JSON(http.StatusInternalServerError, dto)
 		}
 		dto.Message = "success"

@@ -65,6 +65,9 @@ func (m *DB) Close() error {
 }
 
 func (m *DB) Update() error {
+	if viper.GetString("MAXMIND_LICENSE") == "" {
+		return fmt.Errorf("Error: Can't update database when no license key is set (MAXMIND_LICENSE env var needs to be set)")
+	}
 	err := m.Close()
 	if err != nil {
 		fmt.Println("Failed to close maxmind database")
