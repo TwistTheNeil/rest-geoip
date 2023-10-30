@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import type { Ref } from 'vue';
 
-import { useFetch_GetMaptilerToken } from '@/composables/useFetch';
+import { getMaptilerToken } from '@/composables/useFetch';
 
 const maptilerToken: Ref<string> = ref("");
 
@@ -11,7 +11,7 @@ export const useMaptilerToken = async () : Promise<string> => {
   }
 
   // TODO: error?
-  const { data, error } = await useFetch_GetMaptilerToken();
+  const { data, error } = await getMaptilerToken();
   maptilerToken.value = data.value;
 
   return maptilerToken.value;

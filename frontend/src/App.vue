@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from 'vue';
 import { RouterView } from 'vue-router';
-import { useFetch_GetMaptilerToken } from './composables/useFetch';
+import { getMaptilerToken } from './composables/useFetch';
 import { useRoute } from 'vue-router';
 
 import { useMaxmindDataStore } from './stores/maxmindDataStore';
@@ -18,7 +18,7 @@ const maxmindDataStore = useMaxmindDataStore();
 const ready = ref(false);
 
 onBeforeMount(async () => {
-  await useFetch_GetMaptilerToken();
+  await getMaptilerToken();
   if (!route.query.address || route.query.address === "") {
     await maxmindDataStore.$reset();
   } else {

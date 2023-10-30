@@ -3,12 +3,15 @@ import type { Ref } from 'vue'
 
 import type { MaxmindBackendResponse } from '@/types/MaxmindBackend';
 
-// TODO: why param? remove
-export async function useFetch_GetMaxmindData(url: string): Promise<{ data: Ref<MaxmindBackendResponse| null>, error: Ref<string | null> }> {
+export async function getMaxmindData(ipAddress?: string): Promise<{ data: Ref<MaxmindBackendResponse| null>, error: Ref<string | null> }> {
   const data: Ref<MaxmindBackendResponse | null> = ref(null);
   const error: Ref<string | null> = ref(null);
 
   try {
+    let url = '/api/geoip';
+    if (ipAddress) {
+      url = `/api/geoip/${ipAddress}`;
+    }
     const fetchPromise = await fetch(url);
     data.value = await fetchPromise.json();
   } catch (err: any) {
@@ -18,7 +21,7 @@ export async function useFetch_GetMaxmindData(url: string): Promise<{ data: Ref<
   return { data, error };
 };
 
-export async function useFetch_GetMaptilerToken(): Promise<{ data: Ref<string>, error: Ref<string | null> }> {
+export async function getMaptilerToken(): Promise<{ data: Ref<string>, error: Ref<string | null> }> {
   const data: Ref<string> = ref("");
   const error: Ref<string | null> = ref(null);
 
