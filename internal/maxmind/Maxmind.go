@@ -1,10 +1,12 @@
 package maxmind
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"os"
 	"path/filepath"
+	"rest-geoip/internal/errortypes"
 	"rest-geoip/internal/fs"
 	"sync"
 
@@ -48,10 +50,16 @@ type Record struct {
 
 // Open a maxmind database
 func (m *DB) Open() error {
-	var err error
 	dbLocation := viper.GetString("MAXMIND_DB_LOCATION") + viper.GetString("MAXMIND_DB")
 	fmt.Printf("Opening db %s\n", dbLocation)
 
+	_, err := os.Stat(dbLocation)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			e := errortypes.NewErrorDatabaseNotFound(err, dbLocation)
+			return fmt.Errorf("maxmind.Open: db not found: %w", e)
+		}
+	}
 	m.db, err = maxminddb.Open(dbLocation)
 	if err != nil {
 		return fmt.Errorf("%w", err)
@@ -68,10 +76,12 @@ func (m *DB) Update() error {
 	if viper.GetString("MAXMIND_LICENSE") == "" {
 		return fmt.Errorf("Error: Can't update database when no license key is set (MAXMIND_LICENSE env var needs to be set)")
 	}
-	err := m.Close()
-	if err != nil {
-		fmt.Println("Failed to close maxmind database")
-		return err
+	if m == nil {
+		err := m.Close()
+		if err != nil {
+			fmt.Println("Failed to close maxmind database")
+			return err
+		}
 	}
 	if err := DownloadAndUpdate(); err != nil {
 		fmt.Println("Failed to update maxmind database")

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
+	"rest-geoip/internal/errortypes"
 	"rest-geoip/internal/maxmind"
 	"rest-geoip/internal/random"
 	"rest-geoip/internal/router"
@@ -36,10 +38,22 @@ func main() {
 	err := maxmind.
 		GetInstance().
 		Open()
+
 	if err != nil {
-		fmt.Println(err)
-		fmt.Println("Error: Maxmind database not opened during initialization. Please check that it exists.")
-		os.Exit(1)
+		var ErrDatabaseNotFound *errortypes.ErrorDatabaseNotFound
+		if errors.As(errors.Unwrap(err), &ErrDatabaseNotFound) {
+			fmt.Println(err)
+			fmt.Println("Attempting to fetch database")
+			fetchErr := maxmind.GetInstance().Update()
+			if fetchErr != nil {
+				fmt.Println(fetchErr)
+				os.Exit(1)
+			}
+		} else {
+
+			fmt.Println("Error: Maxmind database not opened during initialization. Please check that it exists and is readable.")
+			os.Exit(1)
+		}
 	}
 
 	router.InitRouter()
