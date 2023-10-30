@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"rest-geoip/internal/config"
 	"rest-geoip/internal/maxmind"
 	"strings"
 	"sync"
@@ -14,7 +15,6 @@ import (
 	"github.com/didip/tollbooth_echo"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/spf13/viper"
 )
 
 var e *echo.Echo
@@ -90,16 +90,16 @@ func InitRouter() {
 	// 3 req/s
 	limiter := tollbooth.NewLimiter(3, nil)
 
-	listeningAddress := fmt.Sprintf("%s:%s", viper.GetString("LISTEN_ADDRESS"), viper.GetString("LISTEN_PORT"))
+	listeningAddress := fmt.Sprintf("%s:%s", config.Details().Program.ListenAddress, config.Details().Program.ListenPort)
 
-	if viper.GetBool("LOGGING") {
+	if config.Details().Program.EnableLogging {
 		e.Use(middleware.Logger())
 	}
 	e.Use(middleware.Gzip())
 	e.Use(cliAgentHander)
 
-	if viper.GetBool("WEB") {
-		if viper.GetBool("RELEASE_MODE") {
+	if config.Details().Program.EnableWeb {
+		if config.Details().Program.ReleaseMode {
 			// SPA frontend handler
 			e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 				Root:       "dist",       // This is the path to your SPA build folder, the folder that is created from running "npm build"
@@ -125,7 +125,7 @@ func InitRouter() {
 			MaptilerToken string
 		}
 
-		dto.MaptilerToken = viper.GetString("MAPTILER_TOKEN")
+		dto.MaptilerToken = config.Details().Maptiler.Token
 		return c.JSON(http.StatusOK, dto)
 	})
 	api.GET("/geoip", geoip)
@@ -143,7 +143,7 @@ func InitRouter() {
 		dto.Message = "success"
 		return c.JSON(http.StatusOK, dto)
 	}, func(next echo.HandlerFunc) echo.HandlerFunc {
-		apikey := viper.GetString("API_KEY")
+		apikey := config.Details().Program.APIKey
 		return func(c echo.Context) error {
 			type authorization struct {
 				API_KEY string `header:"x-api-key"`
@@ -162,7 +162,7 @@ func InitRouter() {
 		}
 	})
 
-	if viper.GetBool("WEB") {
+	if config.Details().Program.EnableWeb {
 		// We don't serve anything else, redirect to /
 		e.Any("/*", func(c echo.Context) error {
 			return c.Redirect(http.StatusPermanentRedirect, "/")

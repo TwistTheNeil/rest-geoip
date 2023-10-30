@@ -6,12 +6,12 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"rest-geoip/internal/config"
 	"rest-geoip/internal/errortypes"
 	"rest-geoip/internal/fs"
 	"sync"
 
 	"github.com/oschwald/maxminddb-golang"
-	"github.com/spf13/viper"
 )
 
 // DB struct
@@ -50,7 +50,7 @@ type Record struct {
 
 // Open a maxmind database
 func (m *DB) Open() error {
-	dbLocation := viper.GetString("MAXMIND_DB_LOCATION") + viper.GetString("MAXMIND_DB")
+	dbLocation := config.Details().Maxmind.DBLocation + config.Details().Maxmind.DBFileName
 	fmt.Printf("Opening db %s\n", dbLocation)
 
 	_, err := os.Stat(dbLocation)
@@ -73,7 +73,7 @@ func (m *DB) Close() error {
 }
 
 func (m *DB) Update() error {
-	if viper.GetString("MAXMIND_LICENSE") == "" {
+	if config.Details().Maxmind.LicenseKey == "" {
 		return fmt.Errorf("Error: Can't update database when no license key is set (MAXMIND_LICENSE env var needs to be set)")
 	}
 	if m == nil {
@@ -119,10 +119,10 @@ func GetInstance() *DB {
 // DownloadAndUpdate the maxmind database
 func DownloadAndUpdate() error {
 	// TODO: check that db is closed
-	dbURL := "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=" + viper.GetString("MAXMIND_LICENSE") + "&suffix=tar.gz"
-	md5URL := "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=" + viper.GetString("MAXMIND_LICENSE") + "&suffix=tar.gz.md5"
-	dbDest := viper.GetString("MAXMIND_DB_LOCATION") + "/Geolite.tar.gz"
-	md5Dest := viper.GetString("MAXMIND_DB_LOCATION") + "/Geolite.tar.gz.md5"
+	dbURL := "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=" + config.Details().Maxmind.LicenseKey + "&suffix=tar.gz"
+	md5URL := "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=" + config.Details().Maxmind.LicenseKey + "&suffix=tar.gz.md5"
+	dbDest := config.Details().Maxmind.DBLocation + "/Geolite.tar.gz"
+	md5Dest := config.Details().Maxmind.DBLocation + "/Geolite.tar.gz.md5"
 
 	// Make channels to pass errors in WaitGroup
 	downloadErrors := make(chan error)
@@ -160,22 +160,22 @@ func DownloadAndUpdate() error {
 		return err
 	}
 
-	if err := fs.ExtractTarGz(r, viper.GetString("MAXMIND_DB_LOCATION")); err != nil {
+	if err := fs.ExtractTarGz(r, config.Details().Maxmind.DBLocation); err != nil {
 		return err
 	}
 
 	// Move mmdb to MAXMIND_DB_LOCATION
-	geoCityDBPath, _, err := fs.FindFile(viper.GetString("MAXMIND_DB_LOCATION"), "mmdb$")
+	geoCityDBPath, _, err := fs.FindFile(config.Details().Maxmind.DBLocation, "mmdb$")
 	if err != nil {
 		return err
 	}
 
-	if err = fs.MoveFile(geoCityDBPath, viper.GetString("MAXMIND_DB_LOCATION")+"/"+viper.GetString("MAXMIND_DB")); err != nil {
+	if err = fs.MoveFile(geoCityDBPath, config.Details().Maxmind.DBLocation+"/"+config.Details().Maxmind.DBFileName); err != nil {
 		return err
 	}
 
 	// Remove all temporary downloaded files
-	matches, err := filepath.Glob(viper.GetString("MAXMIND_DB_LOCATION") + "GeoLite2-City_*")
+	matches, err := filepath.Glob(config.Details().Maxmind.DBLocation + "GeoLite2-City_*")
 	if err != nil {
 		return err
 	}
