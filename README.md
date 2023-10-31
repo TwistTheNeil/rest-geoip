@@ -18,7 +18,22 @@ PUT  /api/update          : Update the Maxmind database
 
 The application doesn't provide a database. A `PUT` request to `/api/update` will update the database and will ideally be protected by an api key (header: `X-API-KEY`). If `API_KEY` env var is not set, then the application will set one on startup and notify via STDOUT
 
-### Building
+### Screenshots of optional webapp
+![screenshot](docs/screen.png)
+
+### Building and running
+
+#### using docker-compose
+
+```bash
+$ docker compose up --build
+```
+
+#### using docker-compose for dev
+
+```bash
+$ docker compose -f docker-compose.yml -f docker-compose.dev.yml --build
+```
 
 #### via npm and go
 ```bash
@@ -37,6 +52,3 @@ $ docker build .
 
 The go binary will have the vue app embedded and serve it if `WEB` is enabled.
 the binary will serve the embedded app in production mode (`RELEASE_MODE` = `true`). Or it will look at the filesystem for a `dist/` and serve that if it's not in production mode
-
-### Screenshots of optional webapp
-![screenshot](docs/screen.png)

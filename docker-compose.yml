@@ -2,20 +2,20 @@ version: '3.4'
 
 services:
   rest-geoip:
-    build:
-      context: .
+    image: twistedneil/eleven:main
     ports:
       - 1323:1323
     volumes:
       - ./db:/opt/
     environment:
-      - API_KEY=${API_KEY}
-      - MAXMIND_LICENSE=${MAXMIND_LICENSE}
-      - MAXMIND_DB_LOCATION=/opt/
-      - MAXMIND_DB=GeoLite2-City.mmdb
-      - LOGGING=${LOGGING}
-      - WEB=${WEB}
-      - LISTEN_ADDRESS=${LISTEN_ADDRESS}
-      - LISTEN_PORT=${LISTEN_PORT}
-      - MAPTILER_TOKEN=${MAPTILER_TOKEN}
-      - RELEASE_MODE=${RELEASE_MODE}
+      - GOIP_MAXMIND__DB_LOCATION=/opt/
+      - GOIP_MAXMIND__DB_FILE_NAME=GeoLite2-City.mmdb
+      - GOIP_PROGRAM__API_KEY=${GOIP_PROGRAM__API_KEY}
+      - GOIP_MAPTILER__TOKEN=${GOIP_MAPTILER__TOKEN}
+      - GOIP_MAXMIND__LICENSE_KEY=${GOIP_MAXMIND__LICENSE_KEY}
+      - GOIP_PROGRAM__ENABLE_LOGGING=${GOIP_PROGRAM__ENABLE_LOGGING}
+      - GOIP_PROGRAM__ENABLE_WEB=${GOIP_PROGRAM__ENABLE_WEB}
+      - GOIP_PROGRAM__LISTEN_ADDRESS=${GOIP_PROGRAM__LISTEN_ADDRESS}
+      - GOIP_PROGRAM__LISTEN_PORT=${GOIP_PROGRAM__LISTEN_PORT}
+      - GOIP_PROGRAM__RELEASE_MODE=${GOIP_PROGRAM__RELEASE_MODE}
+
