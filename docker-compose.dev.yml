@@ -4,3 +4,7 @@ services:
   rest-geoip:
     build:
       context: .
+      target: dev
+    volumes:
+      - .:/app
+    command: "air -c .air.compose.toml"

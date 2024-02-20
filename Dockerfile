@@ -20,6 +20,11 @@ COPY --from=spa-builder /app/dist /app/internal/router/dist
 RUN go build -v -ldflags="-s"
 RUN upx /app/rest-geoip
 
+# dev docker image
+FROM golang:1.21.3-alpine3.18 AS dev
+RUN go install github.com/cosmtrek/air@latest
+WORKDIR /app
+
 # Main docker image
 FROM alpine:3.18.4
 COPY --from=builder /app/rest-geoip /usr/bin/
