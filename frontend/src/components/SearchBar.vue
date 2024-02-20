@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang='ts'>
-  import { ref } from 'vue';
+  import { ref, watch } from 'vue';
   import type { Ref } from 'vue';
 
   import SearchIcon from '@/components/icons/SearchIcon.vue';
@@ -28,8 +28,12 @@
   ]);
 
   const maxmindStore = useMaxmindDataStore();
-
   const { data } = storeToRefs(maxmindStore);
 
-  const queryString: Ref<string | null> = ref(data?.value?.IP || '');
+  const queryString: Ref<string> = ref('');
+  watch(data, () => {
+    if (queryString.value !== data.value.IP) {
+      queryString.value = '';
+    }
+  });
 </script>

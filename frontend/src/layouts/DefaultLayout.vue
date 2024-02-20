@@ -1,7 +1,7 @@
 <template>
   <div>
     <OverviewProgressbar />
-    <NavBar />
+    <NavBar @query-reset="resetIPAddressDetails" />
 
     <div class="container justify-content-center align-items-center">
       <SearchBar @query-request="fetchIPAddressDetails" />
@@ -22,6 +22,12 @@
 
   const overviewProgressbarStore = useOverviewProgressbarStore();
   const maxmindDataStore = useMaxmindDataStore();
+
+  const resetIPAddressDetails = async () => {
+    overviewProgressbarStore.update(30);
+    await maxmindDataStore.$reset();
+    overviewProgressbarStore.update(100);
+  };
 
   const fetchIPAddressDetails = async (ipAddress: string) => {
     if (!isIP(ipAddress)) {
