@@ -21,17 +21,13 @@ export async function getMaxmindData(ipAddress?: string): Promise<{ data: Ref<Ma
   return { data, error };
 };
 
-export async function getConfig(): Promise<{ data: ConfigBackendResponse, error: string | null }> {
-  let data: ConfigBackendResponse;
-  const error: string = ref(null);
-
+export async function getConfig(): Promise<{ data: ConfigBackendResponse | null, error: string | null }> {
   try {
     const fetchPromise = await fetch("/api/config");
-    data = await fetchPromise.json();
+    const data: ConfigBackendResponse = await fetchPromise.json();
+    return { data, error: null };
   } catch (err: any) {
-    error.value = err.message;
+    return { data: null, error: err.message };
   }
-
-  return { data, error };
 };
 

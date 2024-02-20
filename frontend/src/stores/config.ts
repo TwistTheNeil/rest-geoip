@@ -11,8 +11,8 @@ export const useConfigStore = defineStore('config', () => {
   async function $reset() {
     // TODO: error?
     const { data, error } = await getConfig();
-    maptilerToken.value = data.MaptilerToken;
-    adminNotice.value = data.AdminNotice;
+    maptilerToken.value = data!.MaptilerToken;
+    adminNotice.value = data!.AdminNotice;
   };
 
   return {

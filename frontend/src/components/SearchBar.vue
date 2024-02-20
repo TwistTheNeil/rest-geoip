@@ -32,7 +32,7 @@
 
   const queryString: Ref<string> = ref('');
   watch(data, () => {
-    if (queryString.value !== data.value.IP) {
+    if (queryString.value !== data.value!.IP) {
       queryString.value = '';
     }
   });
