@@ -4,6 +4,8 @@
     <NavBar @query-reset="resetIPAddressDetails" />
 
     <div class="container justify-content-center align-items-center">
+
+      <AdminNotice />
       <SearchBar @query-request="fetchIPAddressDetails" />
 
       <slot />
@@ -19,6 +21,7 @@
   import SearchBar from '@/components/SearchBar.vue';
   import { useOverviewProgressbarStore } from '@/stores/overviewProgressbarState';
   import { useMaxmindDataStore } from '@/stores/maxmindDataStore';
+  import AdminNotice from '@/components/AdminNotice.vue';
 
   const overviewProgressbarStore = useOverviewProgressbarStore();
   const maxmindDataStore = useMaxmindDataStore();

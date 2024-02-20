@@ -17,6 +17,7 @@ type config struct {
 		EnableWeb     bool   `mapstructure:"ENABLE_WEB"`
 		ListenAddress string `mapstructure:"LISTEN_ADDRESS"`
 		ListenPort    string `mapstructure:"LISTEN_PORT"`
+		AdminNotice   string `mapstructure:"ADMIN_NOTICE"`
 		ReleaseMode   bool   `mapstructure:"RELEASE_MODE"`
 	} `mapstructure:"PROGRAM"`
 	Maptiler struct {
@@ -44,6 +45,7 @@ func Init() {
 		viper.BindEnv("program.enable_web", "GOIP_PROGRAM__ENABLE_WEB")
 		viper.BindEnv("program.listen_address", "GOIP_PROGRAM__LISTEN_ADDRESS")
 		viper.BindEnv("program.listen_port", "GOIP_PROGRAM__LISTEN_PORT")
+		viper.BindEnv("program.admin_notice", "GOIP_PROGRAM__ADMIN_NOTICE")
 		viper.BindEnv("program.release_mode", "GOIP_PROGRAM__RELEASE_MODE")
 		viper.BindEnv("maptiler.token", "GOIP_MAPTILER__TOKEN")
 		viper.BindEnv("maxmind.license_key", "GOIP_MAXMIND__LICENSE_KEY")

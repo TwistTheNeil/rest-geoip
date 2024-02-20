@@ -33,4 +33,7 @@ export interface MaxmindBackendResponse {
   IP: string;
 };
 
-
+export interface ConfigBackendResponse {
+  MaptilerToken: string;
+  AdminNotice: string;
+};

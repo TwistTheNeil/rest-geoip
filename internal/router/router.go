@@ -120,12 +120,14 @@ func InitRouter() {
 
 	api := e.Group("/api")
 	// TODO: protect https://documentation.maptiler.com/hc/en-us/articles/360020806037-Protect-your-map-key
-	api.GET("/maptiler/token", func(c echo.Context) error {
+	api.GET("/config", func(c echo.Context) error {
 		var dto struct {
 			MaptilerToken string
+			AdminNotice   string `json:",omitempty"`
 		}
 
 		dto.MaptilerToken = config.Details().Maptiler.Token
+		dto.AdminNotice = config.Details().Program.AdminNotice
 		return c.JSON(http.StatusOK, dto)
 	})
 	api.GET("/geoip", geoip)

@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import type { Ref } from 'vue'
 
-import type { MaxmindBackendResponse } from '@/types/MaxmindBackend';
+import type { MaxmindBackendResponse, ConfigBackendResponse } from '@/types/MaxmindBackend';
 
 export async function getMaxmindData(ipAddress?: string): Promise<{ data: Ref<MaxmindBackendResponse| null>, error: Ref<string | null> }> {
   const data: Ref<MaxmindBackendResponse | null> = ref(null);
@@ -21,13 +21,13 @@ export async function getMaxmindData(ipAddress?: string): Promise<{ data: Ref<Ma
   return { data, error };
 };
 
-export async function getMaptilerToken(): Promise<{ data: Ref<string>, error: Ref<string | null> }> {
-  const data: Ref<string> = ref("");
-  const error: Ref<string | null> = ref(null);
+export async function getConfig(): Promise<{ data: ConfigBackendResponse, error: string | null }> {
+  let data: ConfigBackendResponse;
+  const error: string = ref(null);
 
   try {
-    const fetchPromise = await fetch("/api/maptiler/token");
-    data.value = (await fetchPromise.json()).MaptilerToken;
+    const fetchPromise = await fetch("/api/config");
+    data = await fetchPromise.json();
   } catch (err: any) {
     error.value = err.message;
   }
