@@ -1,5 +1,5 @@
 # Build spa
-FROM node:18.18.2-alpine3.18 AS spa-builder
+FROM node:20.11.1-alpine3.19 AS spa-builder
 WORKDIR /app
 RUN npm install -g pnpm@8.10.0
 COPY frontend /app
