@@ -11,7 +11,6 @@ RUN npx vite build --outDir /app/dist
 
 # Build app
 FROM golang:1.21.3-alpine3.18 AS builder
-EXPOSE 1323
 RUN apk add --no-cache upx=4.0.2-r0
 WORKDIR /app
 COPY go.mod .
@@ -26,14 +25,12 @@ RUN upx /app/rest-geoip
 # dev docker image
 FROM golang:1.21.3-alpine3.18 AS dev
 RUN go install github.com/cosmtrek/air@latest
+EXPOSE 1323
 WORKDIR /app
-
-# dev frontend image
-FROM frontend-builder AS dev-frontend
-EXPOSE 5173
 
 # Main docker image
 FROM alpine:3.18.4
 COPY --from=builder /app/rest-geoip /usr/bin/
 ENV RELEASE_MODE=true
+EXPOSE 1323
 CMD ["/usr/bin/rest-geoip"]
