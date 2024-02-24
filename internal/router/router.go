@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"os"
 	"rest-geoip/internal/config"
 	"rest-geoip/internal/maxmind"
 	"strings"
@@ -109,11 +108,10 @@ func InitRouter() {
 				Filesystem: http.FS(spaFS),
 			}))
 		} else {
-			// Development mode - static fs handler
-			e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-				Browse:     false,
-				HTML5:      true,
-				Filesystem: http.FS(os.DirFS("./internal/router/dist/")),
+			// Development mode - cors with vite dev
+			e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+				AllowOrigins: []string{"http://localhost:5173"},
+				AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 			}))
 		}
 	}

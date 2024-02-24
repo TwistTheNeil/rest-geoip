@@ -4,7 +4,7 @@
 [![main build](https://github.com/TwistTheNeil/rest-geoip/actions/workflows/docker-build-latest.yml/badge.svg?branch=main)](https://github.com/TwistTheNeil/rest-geoip/actions/workflows/docker-build-latest.yml)
 [![main docker image](https://github.com/TwistTheNeil/rest-geoip/actions/workflows/docker-publish-tags.yml/badge.svg)](https://github.com/TwistTheNeil/rest-geoip/actions/workflows/docker-publish-tags.yml)
 
-***For any current or previous stable versions, look in the appropriate tag's branch. `main` will be in continuous development***
+***For any current or previous stable versions, look in the appropriate tag's branch. [`main`](https://github.com/TwistTheNeil/rest-geoip) will be in continuous development***
 
 A self hosted geoip lookup application written in Go and Vue.js 3 which provides a client with information about their IP address or any other. It uses the [Maxmind](https://www.maxmind.com) GeoLite2-City database.
 

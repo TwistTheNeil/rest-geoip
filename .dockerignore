@@ -1,5 +1,11 @@
 .env
+.env*
 static/3rdparty/*
 *.mmdb
 .git*
 docs
+db
+.air.toml
+.vscode
+frontend/node_modules
+tmp

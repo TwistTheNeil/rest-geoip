@@ -1,10 +1,22 @@
 version: '3.4'
 
 services:
+  frontend:
+    build:
+      context: .
+      target: dev-frontend
+    ports:
+      - 5173:5173
+    volumes:
+      - ./frontend:/app
+    command: "npx vite --mode testing --host 0.0.0.0"
   rest-geoip:
     build:
       context: .
       target: dev
     volumes:
       - .:/app
+    env_file:
+      # create this file
+      - .env.compose.dev
     command: "air -c .air.compose.toml"
