@@ -16,8 +16,10 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-var e *echo.Echo
-var once sync.Once
+var (
+	e    *echo.Echo
+	once sync.Once
+)
 
 //go:embed all:dist
 var spaFS embed.FS
