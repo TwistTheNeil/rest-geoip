@@ -10,8 +10,8 @@ FROM frontend-builder AS spa-builder
 RUN npx vite build --outDir /app/dist
 
 # Build app
-FROM golang:1.21.3-alpine3.18 AS builder
-RUN apk add --no-cache upx=4.0.2-r0
+FROM golang:1.23.1-alpine3.19 AS builder
+RUN apk add --no-cache upx=4.2.1-r0
 WORKDIR /app
 COPY go.mod .
 COPY go.sum .
@@ -23,13 +23,13 @@ RUN go build -v -ldflags="-s"
 RUN upx /app/rest-geoip
 
 # dev docker image
-FROM golang:1.21.3-alpine3.18 AS dev
-RUN go install github.com/cosmtrek/air@latest
+FROM golang:1.23.1-alpine3.19 AS dev
+RUN go install github.com/air-verse/air@latest
 EXPOSE 1323
 WORKDIR /app
 
 # Main docker image
-FROM alpine:3.18.4
+FROM alpine:3.19.4
 COPY --from=builder /app/rest-geoip /usr/bin/
 ENV RELEASE_MODE=true
 EXPOSE 1323
