@@ -4,7 +4,7 @@ interface MaxmindCountry {
 };
 
 interface MaxmindCity {
-  Names?: any; 
+  Names?: any;
 };
 
 interface MaxmindLocation {
