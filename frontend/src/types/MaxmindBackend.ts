@@ -31,6 +31,10 @@ export interface MaxmindBackendResponse {
   Postal: MaxmindPostal;
   Traits: MaxmindTraits;
   IP: string;
+  Subdivisions: {
+    IsoCode: string;
+    GeoNameID: number;
+  }[];
 };
 
 export interface ConfigBackendResponse {

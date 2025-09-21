@@ -45,6 +45,10 @@ type Record struct {
 		IsAnonymousProxy    bool `maxminddb:"is_anonymous_proxy"`
 		IsSatelliteProvider bool `maxminddb:"is_satellite_provider"`
 	} `maxminddb:"traits"`
+	Subdivisions []struct {
+		IsoCode   string `maxminddb:"iso_code"`
+		GeoNameID uint   `maxminddb:"geoname_id"`
+	} `maxminddb:"subdivisions"`
 	IP string
 }
 
