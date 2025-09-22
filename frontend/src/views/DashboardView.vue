@@ -26,6 +26,8 @@
               <tr> <td> Approx. Zip Code </td> <td>{{ data!.Postal.Code }}</td> </tr>
               <tr> <td> Anonymous Proxy </td> <td>{{ data!.Traits.IsAnonymousProxy }}</td> </tr>
               <tr> <td> Satellite Provider </td> <td>{{ data!.Traits.IsSatelliteProvider }}</td> </tr>
+              <tr> <td> Subdivision ISO Code </td> <td>{{ data!.Subdivisions?.map(i => i.IsoCode)?.join(', ') || '' }}</td> </tr>
+              <tr> <td> Subdivision Geo Name ID</td> <td>{{ data!.Subdivisions?.map(i => i.GeoNameID)?.join(', ') || '' }}</td> </tr>
               </tbody>
             </table>
           </div>
