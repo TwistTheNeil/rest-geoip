@@ -66,8 +66,9 @@ func cliAgentHander(next echo.HandlerFunc) echo.HandlerFunc {
 			return next(c)
 		}
 		cliUserAgents := map[string]struct{}{
-			"HTTPie": {},
 			"curl":   {},
+			"HTTPie": {},
+			"xh":     {},
 		}
 
 		ua := c.Request().UserAgent()
