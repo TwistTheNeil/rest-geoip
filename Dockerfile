@@ -1,4 +1,8 @@
-FROM node:22.16.0-alpine3.22 AS frontend-builder
+FROM node:24.12.0-alpine3.23 AS node
+
+FROM golang:1.25.5-alpine3.23 AS golang
+
+FROM node AS frontend-builder
 WORKDIR /app
 RUN apk add pnpm
 COPY frontend /app
@@ -10,7 +14,7 @@ FROM frontend-builder AS spa-builder
 RUN npx vite build --outDir /app/dist
 
 # Build app
-FROM golang:1.24.6-alpine3.22 AS builder
+FROM golang AS builder
 RUN apk add --no-cache upx=5.0.2-r0
 WORKDIR /app
 COPY go.mod .
@@ -23,13 +27,13 @@ RUN go build -v -ldflags="-s"
 RUN upx /app/rest-geoip
 
 # dev docker image
-FROM golang:1.24.6-alpine3.22 AS dev
-RUN go install github.com/air-verse/air@v1.60.0
+FROM golang AS dev
+RUN go install github.com/air-verse/air@v1.63.6
 EXPOSE 1323
 WORKDIR /app
 
 # Main docker image
-FROM alpine:3.22
+FROM alpine:3.23
 COPY --from=builder /app/rest-geoip /usr/bin/
 ENV RELEASE_MODE=true
 EXPOSE 1323
