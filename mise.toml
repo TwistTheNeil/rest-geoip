@@ -1,0 +1,3 @@
+[tools]
+# mise manages golang via go.mod
+node = '24.12.0'
