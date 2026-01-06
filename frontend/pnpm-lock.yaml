@@ -51,6 +51,9 @@ importers:
       '@vue/typescript-plugin':
         specifier: ^3.2.2
         version: 3.2.2(typescript@5.9.3)
+      eruda:
+        specifier: ^3.4.3
+        version: 3.4.3
       eslint:
         specifier: ^9.39.2
         version: 9.39.2
@@ -815,6 +818,9 @@ packages:
   entities@7.0.0:
     resolution: {integrity: sha512-FDWG5cmEYf2Z00IkYRhbFrwIwvdFKH07uV8dvNy0omp/Qb1xcyCWp2UDtcwJF4QZZvk0sLudP6/hAu42TaqVhQ==}
     engines: {node: '>=0.12'}
+
+  eruda@3.4.3:
+    resolution: {integrity: sha512-J2TsF4dXSspOXev5bJ6mljv0dRrxj21wklrDzbvPmYaEmVoC+2psylyRi70nUPFh1mTQfIBsSusUtAMZtUN+/w==}
 
   es-define-property@1.0.1:
     resolution: {integrity: sha512-e3nRfgfUZ4rNGL232gUgX06QNyyez04KdjFrF+LTRoOXmrOgFKDg4BCdsjW8EnT69eqdYGmRpJwiPVYNrCaW3g==}
@@ -2316,6 +2322,8 @@ snapshots:
       '@emmetio/css-abbreviation': 2.1.8
 
   entities@7.0.0: {}
+
+  eruda@3.4.3: {}
 
   es-define-property@1.0.1: {}
 
