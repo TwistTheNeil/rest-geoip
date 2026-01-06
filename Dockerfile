@@ -24,7 +24,7 @@ RUN upx /app/rest-geoip
 
 # dev docker image
 FROM golang:1.24.6-alpine3.22 AS dev
-RUN go install github.com/air-verse/air@latest
+RUN go install github.com/air-verse/air@v1.60.0
 EXPOSE 1323
 WORKDIR /app
 
