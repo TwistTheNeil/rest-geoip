@@ -5,8 +5,6 @@ services:
     build:
       context: .
       target: frontend-builder
-    ports:
-      - 5173:5173
     volumes:
       - ./frontend:/app
     command: "npx vite --mode testing --host 0.0.0.0"
@@ -14,6 +12,8 @@ services:
     build:
       context: .
       target: dev
+    ports:
+      - 1323:1323
     volumes:
       - .:/app
     env_file:
