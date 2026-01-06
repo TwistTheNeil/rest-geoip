@@ -5,7 +5,7 @@ import type { MaxmindBackendResponse, ConfigBackendResponse } from '@/types/Maxm
 
 const BACKEND_HOST = import.meta.env.VITE_BACKEND_HOST;
 
-export async function getMaxmindData(ipAddress?: string): Promise<{ data: Ref<MaxmindBackendResponse| null>, error: Ref<string | null> }> {
+export async function getMaxmindData(ipAddress?: string): Promise<{ data: Ref<MaxmindBackendResponse | null>, error: Ref<string | null> }> {
   const data: Ref<MaxmindBackendResponse | null> = ref(null);
   const error: Ref<string | null> = ref(null);
 

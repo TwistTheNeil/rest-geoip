@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"rest-geoip/internal/config"
-	"rest-geoip/internal/maxmind"
+	"net/url"
 	"strings"
 	"sync"
+
+	"rest-geoip/internal/config"
+	"rest-geoip/internal/maxmind"
 
 	"github.com/didip/tollbooth/v7"
 	"github.com/didip/tollbooth_echo"
@@ -111,16 +113,27 @@ func InitRouter() {
 				Filesystem: http.FS(spaFS),
 			}))
 		} else {
-			// Development mode - cors with vite dev
-			e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-				AllowOrigins: []string{"http://localhost:5173"},
-				AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+			// development mode - proxy to vite server
+			frontendURL, _ := url.Parse("http://frontend:5173")
+
+			e.Use(middleware.ProxyWithConfig(middleware.ProxyConfig{
+				Balancer: middleware.NewRoundRobinBalancer([]*middleware.ProxyTarget{
+					{URL: frontendURL},
+				}),
+				// don't proxy api routes
+				Skipper: func(c echo.Context) bool {
+					return strings.HasPrefix(c.Request().URL.Path, "/api")
+				},
+				// enable websocket proxying for vite hmr
+				ModifyResponse: func(res *http.Response) error {
+					res.Header.Set("Access-Control-Allow-Origin", "*")
+					return nil
+				},
 			}))
 		}
 	}
 
 	api := e.Group("/api")
-	// TODO: protect https://documentation.maptiler.com/hc/en-us/articles/360020806037-Protect-your-map-key
 	api.GET("/config", func(c echo.Context) error {
 		var dto struct {
 			MaptilerToken string
