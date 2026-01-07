@@ -1,0 +1,102 @@
+:root {
+  font-family: 'Roboto', 'Ubuntu', 'Cantarell', 'Oxygen', 'Fira Sans', 'Droid Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+
+  /* nord */
+  /* darks */
+  --nord0: #2e3440;
+  --nord1: #3b4252;
+  --nord2: #434c5e;
+  --nord3: #4c566a;
+
+  /* brights */
+  --nord4: #d8dee9;
+  --nord5: #e5e9f0;
+  --nord6: #eceff4;
+
+  /* frost */
+  --nord7: #8fbcbb;  /* blueish green */
+  --nord8: #88c0d0;  /* bright blue */
+  --nord9: #81a1c1;  /* light blue */
+  --nord10: #5e81ac; /* dark blue */
+
+  /* aurora */
+  --nord11: #bf616a; /* red */
+  --nord12: #d08770; /* orange */
+  --nord13: #ebcb8b; /* yellow */
+  --nord14: #a3be8c; /* green */
+  --nord15: #b48ead; /* purple */
+
+  /* dracula */
+  --dracula-background: #282a36;
+  --dracula-background-light: #2a2d39;
+  --dracula-current-line: #44475a;
+  --dracula-selection: #44475a;
+  --dracula-foreground: #f8f8f2;
+  --dracula-comment: #6272a4;
+  --dracula-cyan: #8be9fd;
+  --dracula-green: #50fa7b;
+  --dracula-orange: #ffb86c;
+  --dracula-pink: #ff79c6;
+  --dracula-purple: #bd93f9;
+  --dracula-red: #ff5555;
+  --dracula-yellow: #f1fa8c;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.p-panel {
+  border: 0;
+}
+
+@media (prefers-color-scheme: light) {
+  .p-panel {
+    --p-panel-header-color: var(--nord1);
+    --p-datatable-row-color: var(--nord1);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--dracula-background);
+  }
+  .p-panel {
+    --p-panel-background: var(--dracula-background);
+    --p-panel-header-color: var(--nord4);
+    --p-datatable-row-color: var(--nord4);
+  }
+  .p-inputtext {
+    --p-inputtext-background: var(--dracula-background);
+    --p-inputtext-hover-border-color: var(--dracula-comment);
+    --p-inputtext-focus-border-color: var(--dracula-comment);
+    --p-inputtext-focus-ring-color: var(--dracula-comment);
+    --p-inputtext-border-color: var(--dracula-current-line);
+  }
+  .p-datatable-tbody {
+    --p-datatable-row-background: var(--dracula-background);
+  }
+  .p-datatable {
+    --p-datatable-body-cell-border-color: var(--dracula-current-line);
+  }
+  .p-message {
+    --p-message-info-background: var(--nord10);
+    --p-message-info-color: var(--dracula-background);
+  }
+  .p-menubar {
+    --p-menubar-background: var(--dracula-background-light);
+  }
+  .p-button {
+    --p-button-primary-background: var(--nord10);
+    --p-button-primary-hover-background: var(--nord9);
+    --p-button-primary-active-background: var(--nord8);
+    --p-button-primary-border-color: var(--nord10);
+    --p-button-primary-hover-border-color: var(--nord9);
+    --p-button-primary-active-border-color: var(--nord10);
+  }
+  .p-progressbar {
+    --p-progressbar-background: var(--dracula-background-light);
+    --p-progressbar-value-background: var(--nord10);
+  }
+}

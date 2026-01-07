@@ -1,8 +1,20 @@
 <template>
-<nav class="navbar navbar-light bg-light mb-3">
-  <div class="container">
-    <a class="navbar-brand" href="https://github.com/TwistTheNeil/rest-geoip">About</a>
-    <button type="button" class="btn btn-outline-primary btn-sm" @click="$emit('queryReset')">My IP Address</button>
-  </div>
-</nav>
+  <Menubar :model="items" style="margin-bottom: 1rem; border: none;">
+    <template #end>
+      <Button label="My IP Address" size="small" @click="$emit('queryReset')" />
+    </template>
+  </Menubar>
 </template>
+
+<script setup lang="ts">
+import Menubar from 'primevue/menubar';
+import Button from 'primevue/button';
+import { ref } from 'vue';
+
+const items = ref([
+  {
+    label: 'About',
+    url: 'https://github.com/TwistTheNeil/rest-geoip'
+  }
+]);
+</script>
