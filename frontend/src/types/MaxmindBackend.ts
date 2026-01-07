@@ -4,7 +4,7 @@ interface MaxmindCountry {
 };
 
 interface MaxmindCity {
-  Names?: any;
+  Names: Record<string, string> | null;
 };
 
 interface MaxmindLocation {

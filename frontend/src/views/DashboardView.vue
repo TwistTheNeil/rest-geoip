@@ -45,7 +45,7 @@
       return null;
     }
 
-    const names: Array<string> = Object.keys(data!.value.City.Names).map((e) => `${e}:${data!.value!.City.Names[e]}`);
+    const names: Array<string> = Object.keys(data!.value.City.Names).map((e) => `${e}:${data!.value!.City.Names![e]}`);
     return names;
   });
 
