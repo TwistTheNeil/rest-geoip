@@ -24,9 +24,6 @@ importers:
         specifier: ^4.6.4
         version: 4.6.4(vue@3.5.26(typescript@5.9.3))
     devDependencies:
-      '@rushstack/eslint-patch':
-        specifier: ^1.15.0
-        version: 1.15.0
       '@tsconfig/node18':
         specifier: ^18.2.6
         version: 18.2.6
@@ -494,9 +491,6 @@ packages:
     resolution: {integrity: sha512-TAcgQh2sSkykPRWLrdyy2AiceMckNf5loITqXxFI5VuQjS5tSuw3WlwdN8qv8vzjLAUTvYaH/mVjSFpbkFbpTg==}
     cpu: [x64]
     os: [win32]
-
-  '@rushstack/eslint-patch@1.15.0':
-    resolution: {integrity: sha512-ojSshQPKwVvSMR8yT2L/QtUkV5SXi/IfDiJ4/8d6UbTPjiHVmxZzUAzGD8Tzks1b9+qQkZa0isUOvYObedITaw==}
 
   '@tsconfig/node18@18.2.6':
     resolution: {integrity: sha512-eAWQzAjPj18tKnDzmWstz4OyWewLUNBm9tdoN9LayzoboRktYx3Enk1ZXPmThj55L7c4VWYq/Bzq0A51znZfhw==}
@@ -1900,8 +1894,6 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.52.5':
     optional: true
-
-  '@rushstack/eslint-patch@1.15.0': {}
 
   '@tsconfig/node18@18.2.6': {}
 
