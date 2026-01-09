@@ -16,6 +16,7 @@ services:
       - 1323:1323
     volumes:
       - .:/app
+      - ./db:/opt
     env_file:
       # create this file
       - .env.compose.dev
