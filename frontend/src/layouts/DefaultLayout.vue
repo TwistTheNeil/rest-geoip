@@ -3,8 +3,7 @@
     <OverviewProgressbar />
     <NavBar @query-reset="resetIPAddressDetails" />
 
-    <div class="container justify-content-center align-items-center">
-
+    <div class="container">
       <AdminNotice />
       <SearchBar @query-request="fetchIPAddressDetails" />
 
@@ -44,3 +43,12 @@
     overviewProgressbarStore.update(100);
   };
 </script>
+
+<style scoped>
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  width: 100%;
+}
+</style>

@@ -13,9 +13,12 @@
     "watch": "vite build --mode testing --watch"
   },
   "dependencies": {
+    "@primevue/themes": "^4.5.4",
     "is-ip": "^5.0.1",
     "maplibre-gl": "^5.15.0",
     "pinia": "^3.0.4",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.5.4",
     "vue": "^3.5.26",
     "vue-router": "^4.6.4"
   },

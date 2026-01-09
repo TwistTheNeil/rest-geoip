@@ -1,48 +1,32 @@
 <template>
   <div>
-    <div class="card">
-      <div class="card-header">
-        Details for IP Address: {{ data!.IP }}
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-lg-6">
-            <table class="table table-borderless table-hover table-sm">
-            <tbody>
-              <tr> <td> Country </td> <td>{{ data!.Country.ISOCode }}</td>  </tr>
-              <tr> <td> EU </td> <td>{{ data!.Country.IsInEuropeanUnion }}</td> </tr>
-              <tr>
-                <td> City </td>
-                <td>
-                  <span v-for="name in cityNames" :key="name">
-                    {{ name }}
-                    <br />
-                  </span>
-                </td>
-              </tr>
-              <tr> <td> Latitude </td> <td>{{ data!.Location.Latitude }}</td> </tr>
-              <tr> <td> Longitude </td> <td>{{ data!.Location.Longitude }}</td> </tr>
-              <tr> <td> Time Zone </td> <td>{{ data!.Location.TimeZone }}</td> </tr>
-              <tr> <td> Approx. Zip Code </td> <td>{{ data!.Postal.Code }}</td> </tr>
-              <tr> <td> Anonymous Proxy </td> <td>{{ data!.Traits.IsAnonymousProxy }}</td> </tr>
-              <tr> <td> Satellite Provider </td> <td>{{ data!.Traits.IsSatelliteProvider }}</td> </tr>
-              <tr> <td> Subdivision ISO Code </td> <td>{{ data!.Subdivisions?.map(i => i.IsoCode)?.join(', ') || '' }}</td> </tr>
-              <tr> <td> Subdivision Geo Name ID</td> <td>{{ data!.Subdivisions?.map(i => i.GeoNameID)?.join(', ') || '' }}</td> </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="col-lg-6">
-            <ApproximateMap :longitude="data!.Location.Longitude" :latitude="data!.Location.Latitude" />
-          </div>
+    <Panel :header="`Details for IP Address: ${data!.IP}`">
+      <div style="display: flex; flex-wrap: wrap; gap: 1rem; min-height: 500px;">
+        <div style="flex: 1; min-width: 300px;">
+          <DataTable :value="tableData" size="small" :showHeaders="false" :showGridlines="false">
+            <Column field="property" />
+            <Column field="value">
+              <template #body="slotProps">
+                <div v-if="slotProps.data.property === 'City'" style="white-space: pre-line;">{{ slotProps.data.value }}</div>
+                <div v-else>{{ slotProps.data.value }}</div>
+              </template>
+            </Column>
+          </DataTable>
+        </div>
+        <div style="flex: 1; min-width: 300px; min-height: 400px;">
+          <ApproximateMap :longitude="data!.Location.Longitude" :latitude="data!.Location.Latitude" />
         </div>
       </div>
-    </div>
+    </Panel>
   </div>
 </template>
 
 <script setup lang='ts'>
   import { computed } from 'vue';
   import type { Ref } from 'vue';
+  import DataTable from 'primevue/datatable';
+  import Column from 'primevue/column';
+  import Panel from 'primevue/panel';
 
   import ApproximateMap from '@/components/ApproximateMap.vue';
   import { useMaxmindDataStore } from '@/stores/maxmindDataStore';
@@ -63,5 +47,23 @@
 
     const names: Array<string> = Object.keys(data!.value.City.Names).map((e) => `${e}:${data!.value!.City.Names[e]}`);
     return names;
+  });
+
+  const tableData = computed(() => {
+    if (!data.value) return [];
+
+    return [
+      { property: 'Country', value: data.value.Country.ISOCode },
+      { property: 'EU', value: String(data.value.Country.IsInEuropeanUnion) },
+      { property: 'City', value: cityNames.value?.join('\n') || '' },
+      { property: 'Latitude', value: String(data.value.Location.Latitude) },
+      { property: 'Longitude', value: String(data.value.Location.Longitude) },
+      { property: 'Time Zone', value: data.value.Location.TimeZone },
+      { property: 'Approx. Zip Code', value: data.value.Postal.Code },
+      { property: 'Anonymous Proxy', value: String(data.value.Traits.IsAnonymousProxy) },
+      { property: 'Satellite Provider', value: String(data.value.Traits.IsSatelliteProvider) },
+      { property: 'Subdivision ISO Code', value: data.value.Subdivisions?.map(i => i.IsoCode)?.join(', ') || '' },
+      { property: 'Subdivision Geo Name ID', value: data.value.Subdivisions?.map(i => i.GeoNameID)?.join(', ') || '' },
+    ];
   });
 </script>

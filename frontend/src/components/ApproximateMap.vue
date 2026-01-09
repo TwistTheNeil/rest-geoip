@@ -1,6 +1,5 @@
 <template>
-  <!-- TODO: figure out why height: 100% doesn't work on mobile -->
-  <div id='map' style='height: 500px'></div>
+  <div id='map' style='height: 100%; width: 100%; flex: 1;'></div>
 </template>
 
 <script setup lang='ts'>
