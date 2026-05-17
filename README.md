@@ -33,7 +33,7 @@ $ docker compose up --build
 #### using docker-compose for dev
 
 ```bash
-$ docker compose -f docker-compose.yml -f docker-compose.dev.yml --build
+$ docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 ```
 
 #### via npm and go
@@ -52,4 +52,4 @@ $ docker build .
 ```
 
 The go binary will have the vue app embedded and serve it if `WEB` is enabled.
-the binary will serve the embedded app in production mode (`RELEASE_MODE` = `true`). Or it will look at the filesystem for a `dist/` and serve that if it's not in production mode
+The binary will serve the embedded app in production mode (`RELEASE_MODE` = `true`). Or it will look at the filesystem for a `dist/` and serve that if it's not in production mode
