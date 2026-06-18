@@ -216,12 +216,12 @@ func InitRouter() {
 		}
 	})
 
-	if config.Details().Program.EnableWeb {
-		// We don't serve anything else, redirect to /
-		e.Any("/*", func(c echo.Context) error {
-			return c.Redirect(http.StatusPermanentRedirect, "/")
-		})
-	}
+	e.Any("/*", func(c echo.Context) error {
+		type dto struct {
+			Message string `json:"message"`
+		}
+		return c.JSON(http.StatusNotFound, &dto{Message: "not found"})
+	})
 
 	e.Use(tollbooth_echo.LimitHandler(limiter))
 
