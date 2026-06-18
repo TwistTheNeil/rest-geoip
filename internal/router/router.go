@@ -16,6 +16,8 @@ import (
 	"github.com/didip/tollbooth_echo"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 var (
@@ -91,13 +93,49 @@ func InitRouter() {
 		e = echo.New()
 	})
 
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+
 	// 3 req/s
 	limiter := tollbooth.NewLimiter(3, nil)
 
 	listeningAddress := fmt.Sprintf("%s:%s", config.Details().Program.ListenAddress, config.Details().Program.ListenPort)
 
 	if config.Details().Program.EnableLogging {
-		e.Use(middleware.Logger())
+		e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+			LogURI:     true,
+			LogStatus:  true,
+			LogHost:    true,
+			LogMethod:  true,
+			LogLatency: true,
+			LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+				if v.Error == nil {
+					log.Info().
+						Str("remote_ip", c.RealIP()).
+						Str("host", v.Host).
+						Str("method", v.Method).
+						Str("uri", v.URI).
+						Str("user_agent", c.Request().UserAgent()).
+						Int("status", v.Status).
+						Int64("latency", v.Latency.Nanoseconds()).
+						Str("latency_human", v.Latency.String()).
+						Msg("request")
+				} else {
+					log.Error().
+						Str("remote_ip", c.RealIP()).
+						Str("host", v.Host).
+						Str("method", v.Method).
+						Str("uri", v.URI).
+						Str("user_agent", c.Request().UserAgent()).
+						Int("status", v.Status).
+						Int64("latency", v.Latency.Nanoseconds()).
+						Str("latency_human", v.Latency.String()).
+						Err(v.Error).
+						Msg("request")
+				}
+
+				return nil
+			},
+		}))
 	}
 	e.Use(middleware.Gzip())
 	e.Use(cliAgentHander)
