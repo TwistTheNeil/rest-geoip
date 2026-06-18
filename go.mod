@@ -7,6 +7,7 @@ require (
 	github.com/didip/tollbooth_echo v0.0.0-20220826213528-8e558c99076d
 	github.com/labstack/echo/v4 v4.15.0
 	github.com/oschwald/maxminddb-golang v1.13.1
+	github.com/rs/zerolog v1.35.1
 	github.com/spf13/viper v1.21.0
 )
 
